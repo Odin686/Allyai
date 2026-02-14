@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct AIAcademyApp: App {
+struct VizanciaApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10001 /* AIAcademyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001; };
+		A10001 /* VizanciaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001; };
 		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002; };
 		A10003 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10003; };
 		A10004 /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004; };
@@ -52,8 +52,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		P10001 /* AIAcademy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIAcademy.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B10001 /* AIAcademyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAcademyApp.swift; sourceTree = "<group>"; };
+		P10001 /* Vizancia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vizancia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10001 /* VizanciaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizanciaApp.swift; sourceTree = "<group>"; };
 		B10002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B10003 /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		B10004 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
@@ -111,12 +111,12 @@
 		G10000 = {
 			isa = PBXGroup;
 			children = (
-				G10001 /* AIAcademy */,
+				G10001 /* Vizancia */,
 				G10099 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		G10001 /* AIAcademy */ = {
+		G10001 /* Vizancia */ = {
 			isa = PBXGroup;
 			children = (
 				G10002 /* App */,
@@ -127,13 +127,13 @@
 				G10007 /* Views */,
 				B10041 /* Assets.xcassets */,
 			);
-			path = AIAcademy;
+			path = Vizancia;
 			sourceTree = "<group>";
 		};
 		G10002 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				B10001 /* AIAcademyApp.swift */,
+				B10001 /* VizanciaApp.swift */,
 				B10002 /* ContentView.swift */,
 			);
 			path = App;
@@ -272,7 +272,7 @@
 		G10099 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				P10001 /* AIAcademy.app */,
+				P10001 /* Vizancia.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -280,9 +280,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		T10001 /* AIAcademy */ = {
+		T10001 /* Vizancia */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C10003 /* Build configuration list for PBXNativeTarget "AIAcademy" */;
+			buildConfigurationList = C10003 /* Build configuration list for PBXNativeTarget "Vizancia" */;
 			buildPhases = (
 				S10001 /* Sources */,
 				F10001 /* Frameworks */,
@@ -292,9 +292,9 @@
 			);
 			dependencies = (
 			);
-			name = AIAcademy;
-			productName = AIAcademy;
-			productReference = P10001 /* AIAcademy.app */;
+			name = Vizancia;
+			productName = Vizancia;
+			productReference = P10001 /* Vizancia.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -312,7 +312,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C10001 /* Build configuration list for PBXProject "AIAcademy" */;
+			buildConfigurationList = C10001 /* Build configuration list for PBXProject "Vizancia" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -325,7 +325,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				T10001 /* AIAcademy */,
+				T10001 /* Vizancia */,
 			);
 		};
 /* End PBXProject section */
@@ -346,7 +346,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10001 /* AIAcademyApp.swift in Sources */,
+				A10001 /* VizanciaApp.swift in Sources */,
 				A10002 /* ContentView.swift in Sources */,
 				A10003 /* Color+Theme.swift in Sources */,
 				A10004 /* Date+Helpers.swift in Sources */,
@@ -577,7 +577,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C10001 /* Build configuration list for PBXProject "AIAcademy" */ = {
+		C10001 /* Build configuration list for PBXProject "Vizancia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC0001 /* Debug */,
@@ -586,7 +586,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C10003 /* Build configuration list for PBXNativeTarget "AIAcademy" */ = {
+		C10003 /* Build configuration list for PBXNativeTarget "Vizancia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC0003 /* Debug */,
