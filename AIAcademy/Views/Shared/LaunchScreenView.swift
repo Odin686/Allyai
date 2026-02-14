@@ -46,7 +46,7 @@ struct LaunchScreenView: View {
                 }
                 
                 VStack(spacing: 8) {
-                    Text("AI Academy")
+                    Text("Vizancia")
                         .font(.system(size: 34, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .opacity(showTitle ? 1 : 0)

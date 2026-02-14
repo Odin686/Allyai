@@ -25,7 +25,7 @@ struct HomeView: View {
                 .padding(.bottom, 30)
             }
             .background(Color.aiBackground.ignoresSafeArea())
-            .navigationTitle("AI Academy")
+            .navigationTitle("Vizancia")
             .navigationBarTitleDisplayMode(.large)
             .toolbar { headerToolbar }
             .sheet(item: $showCategoryDetail) { cat in

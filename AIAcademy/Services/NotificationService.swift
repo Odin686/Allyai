@@ -38,7 +38,7 @@ class NotificationService {
             }
             
             let content = UNMutableNotificationContent()
-            content.title = "AI Academy"
+            content.title = "Vizancia"
             content.body = message
             content.sound = .default
             

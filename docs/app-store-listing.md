@@ -1,7 +1,7 @@
-# AI Academy — App Store Listing
+# Vizancia — App Store Listing
 
 ## App Name
-AI Academy — Learn AI the Fun Way
+Vizancia — Learn AI the Fun Way
 
 ## Subtitle (30 chars max)
 Master AI Through Play
@@ -21,7 +21,7 @@ Free
 
 🧠 **Learn Artificial Intelligence — no coding or math required.**
 
-AI Academy turns complex AI concepts into bite-sized, interactive lessons that anyone can understand. Whether you're curious about ChatGPT, worried about AI ethics, or want to master prompt engineering — we've got you covered.
+Vizancia turns complex AI concepts into bite-sized, interactive lessons that anyone can understand. Whether you're curious about ChatGPT, worried about AI ethics, or want to master prompt engineering — we've got you covered.
 
 **LEARN AT YOUR OWN PACE**
 Explore 10 structured learning paths covering everything from AI basics to the future of artificial intelligence. Each path contains 6 lessons with interactive questions that make learning stick.
@@ -62,7 +62,7 @@ Explore 10 structured learning paths covering everything from AI basics to the f
 10. Future of AI — AGI, existential risk, and governance
 
 **DESIGNED FOR EVERYONE**
-No technical background needed. AI Academy explains concepts in plain language with real-world examples. Perfect for students, professionals, parents, or anyone curious about the AI revolution.
+No technical background needed. Vizancia explains concepts in plain language with real-world examples. Perfect for students, professionals, parents, or anyone curious about the AI revolution.
 
 **100% OFFLINE & PRIVATE**
 • Works without internet — learn anywhere
@@ -70,7 +70,7 @@ No technical background needed. AI Academy explains concepts in plain language w
 • No data collected — ever
 • All progress stored locally on your device
 
-Download AI Academy today and start your AI journey! 🚀
+Download Vizancia today and start your AI journey! 🚀
 
 ---
 
@@ -81,7 +81,7 @@ AI,artificial intelligence,learn AI,ChatGPT,machine learning,AI course,AI quiz,p
 Master AI concepts through interactive lessons & mini-games. 10 learning paths, 360 questions, 5 games. No coding required. 100% free & offline. Start your AI journey today!
 
 ## What's New (for v1.0)
-🎉 Welcome to AI Academy!
+🎉 Welcome to Vizancia!
 
 • 10 AI learning paths with 60 lessons and 360 questions
 • 6 interactive question types
@@ -92,6 +92,9 @@ Master AI concepts through interactive lessons & mini-games. 10 learning paths, 
 
 ## Support URL
 https://odin686.github.io/Allyai/privacy-policy.html
+
+## Support Email
+info@vizancia.ca
 
 ## Marketing URL (optional)
 https://github.com/Odin686/Allyai

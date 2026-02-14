@@ -42,7 +42,7 @@ struct OnboardingView: View {
             Image(systemName: "brain.head.profile")
                 .font(.system(size: 80))
                 .foregroundColor(.aiPrimary)
-            Text("Welcome to\nAI Academy")
+            Text("Welcome to\nVizancia")
                 .font(.system(size: 36, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.aiTextPrimary)
