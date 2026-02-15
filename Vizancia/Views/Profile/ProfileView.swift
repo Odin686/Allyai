@@ -101,8 +101,14 @@ struct ProfileView: View {
                         Spacer()
                         Text("1.0.0").foregroundColor(.aiTextSecondary)
                     }
-                    Link(destination: URL(string: "https://apple.com")!) {
+                    Link(destination: URL(string: "https://odin686.github.io/Vizancia/privacy-policy.html")!) {
                         Label("Privacy Policy", systemImage: "hand.raised.fill")
+                    }
+                    Link(destination: URL(string: "https://odin686.github.io/Vizancia/terms-of-service.html")!) {
+                        Label("Terms of Service", systemImage: "doc.text.fill")
+                    }
+                    Link(destination: URL(string: "mailto:info@vizancia.ca")!) {
+                        Label("Contact Support", systemImage: "envelope.fill")
                     }
                 }
                 .listRowBackground(Color.aiCard)
