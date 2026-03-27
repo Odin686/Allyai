@@ -54,6 +54,7 @@
 		A10045 /* DailyChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10045; };
 		A10046 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10046; };
 		A10047 /* AIPairsGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10047; };
+		A10048 /* FunFacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10048; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,6 +106,7 @@
 		B10045 /* DailyChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChallengeView.swift; sourceTree = "<group>"; };
 		B10046 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		B10047 /* AIPairsGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPairsGame.swift; sourceTree = "<group>"; };
+		B10048 /* FunFacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunFacts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +175,7 @@
 				B10018 /* CategoryContent8.swift */,
 				B10019 /* CategoryContent9.swift */,
 				B10020 /* CategoryContent10.swift */,
+				B10048 /* FunFacts.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -407,6 +410,7 @@
 				A10045 /* DailyChallengeView.swift in Sources */,
 				A10046 /* ConfettiView.swift in Sources */,
 				A10047 /* AIPairsGame.swift in Sources */,
+				A10048 /* FunFacts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,6 +28,7 @@ struct MultipleChoiceView: View {
                     ) {
                         selectedAnswer = option
                         HapticService.shared.lightTap()
+                        SoundService.shared.play(.select)
                     }
                 }
             }
@@ -60,6 +61,7 @@ struct TrueFalseView: View {
                     Button {
                         selectedAnswer = option
                         HapticService.shared.lightTap()
+                        SoundService.shared.play(.select)
                     } label: {
                         VStack(spacing: 8) {
                             Image(systemName: option == "True" ? "checkmark.circle" : "xmark.circle")
@@ -135,6 +137,7 @@ struct FillInBlankView: View {
                     ) {
                         selectedAnswer = option
                         HapticService.shared.lightTap()
+                        SoundService.shared.play(.select)
                     }
                 }
             }
@@ -194,6 +197,7 @@ struct ScenarioJudgmentView: View {
                     ) {
                         selectedAnswer = option
                         HapticService.shared.lightTap()
+                        SoundService.shared.play(.select)
                     }
                 }
             }
