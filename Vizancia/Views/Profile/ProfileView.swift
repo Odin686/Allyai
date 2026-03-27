@@ -116,7 +116,11 @@ struct ProfileView: View {
                     Link(destination: URL(string: "https://odin686.github.io/Vizancia/terms-of-service.html")!) {
                         Label("Terms of Service", systemImage: "doc.text.fill")
                     }
-                    Link(destination: URL(string: "mailto:info@vizancia.ca")!) {
+                    Button {
+                        if let url = URL(string: "mailto:info@vizancia.com") {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
                         Label("Contact Support", systemImage: "envelope.fill")
                     }
                 }
