@@ -197,8 +197,13 @@ struct LessonCompleteView: View {
                 animateStars = true
                 animateXP = true
             }
-            SoundService.shared.play(.lessonComplete)
-            if isPerfect { HapticService.shared.perfectScore() } else { HapticService.shared.success() }
+            if isPerfect {
+                SoundService.shared.play(.perfectFanfare)
+                HapticService.shared.perfectScore()
+            } else {
+                SoundService.shared.play(.lessonComplete)
+                HapticService.shared.success()
+            }
             checkNewAchievements()
 
             // Confetti for perfect score
@@ -217,6 +222,7 @@ struct LessonCompleteView: View {
                     withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) { showLevelUp = true }
                     showConfetti = true
                     HapticService.shared.levelUp()
+                    SoundService.shared.play(.levelUp)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                         withAnimation { showLevelUp = false }
                     }
