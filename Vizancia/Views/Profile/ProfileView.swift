@@ -3,7 +3,13 @@ import SwiftUI
 struct ProfileView: View {
     @Bindable var user: UserProfile
     @State private var showResetAlert = false
-    
+
+    private var displayName: String {
+        if !user.userName.isEmpty { return user.userName }
+        if !user.name.isEmpty && user.name != "Learner" { return user.name }
+        return "AI Learner"
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -12,7 +18,7 @@ struct ProfileView: View {
                     HStack(spacing: 16) {
                         LevelBadge(level: user.currentLevel, size: 56)
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(user.name.isEmpty ? "AI Learner" : user.name)
+                            Text(displayName)
                                 .font(.aiTitle())
                             let levelDef = LevelDefinition.all.first { $0.level == user.currentLevel }
                             Text(levelDef?.title ?? "AI Novice")
@@ -70,9 +76,12 @@ struct ProfileView: View {
                     HStack {
                         Label("Name", systemImage: "person")
                         Spacer()
-                        TextField("Your name", text: $user.name)
+                        TextField("Your name", text: $user.userName)
                             .multilineTextAlignment(.trailing)
                             .foregroundColor(.aiTextSecondary)
+                            .onChange(of: user.userName) { _, newValue in
+                                user.name = newValue
+                            }
                     }
                 }
                 .listRowBackground(Color.aiCard)
