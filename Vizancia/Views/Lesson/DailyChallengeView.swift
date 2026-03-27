@@ -190,14 +190,15 @@ struct DailyChallengeView: View {
 
     // MARK: - Logic
     private func loadChallenge() {
-        let allQuestions = LessonContentProvider.shared.allCategories
-            .flatMap { $0.lessons }
-            .flatMap { $0.questions }
-            .filter { $0.type == .multipleChoice || $0.type == .trueFalse || $0.type == .scenarioJudgment }
-
-        guard !allQuestions.isEmpty else { return }
-        let dayIndex = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? 0
-        question = allQuestions[dayIndex % allQuestions.count]
+        let categories = LessonContentProvider.shared.allCategories
+        let lessons = categories.flatMap { $0.lessons }
+        let questions = lessons.flatMap { $0.questions }
+        let eligible: [Question] = questions.filter { q in
+            q.type == .multipleChoice || q.type == .trueFalse || q.type == .scenarioJudgment
+        }
+        guard !eligible.isEmpty else { return }
+        let dayIndex: Int = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? 0
+        question = eligible[dayIndex % eligible.count]
     }
 
     private func checkAnswer(_ q: Question) {
