@@ -194,7 +194,7 @@ enum DailyGoalTier: String, Codable, CaseIterable {
 enum GameType: String, CaseIterable, Identifiable {
     case speedRound
     case aiOrNot
-    case ethicsCourt
+    case aiPairs
     case promptCraft
     case buzzwordBuster
     
@@ -204,7 +204,7 @@ enum GameType: String, CaseIterable, Identifiable {
         switch self {
         case .speedRound: return "Speed Round"
         case .aiOrNot: return "AI or Not?"
-        case .ethicsCourt: return "Ethics Court"
+        case .aiPairs: return "AI Pairs"
         case .promptCraft: return "Prompt Craft"
         case .buzzwordBuster: return "Buzzword Buster"
         }
@@ -214,7 +214,7 @@ enum GameType: String, CaseIterable, Identifiable {
         switch self {
         case .speedRound: return "bolt.fill"
         case .aiOrNot: return "questionmark.circle.fill"
-        case .ethicsCourt: return "scalemass.fill"
+        case .aiPairs: return "square.grid.3x3.fill"
         case .promptCraft: return "text.cursor"
         case .buzzwordBuster: return "target"
         }
@@ -224,7 +224,7 @@ enum GameType: String, CaseIterable, Identifiable {
         switch self {
         case .speedRound: return "20 rapid-fire questions in 5 seconds each!"
         case .aiOrNot: return "Can AI really do this today?"
-        case .ethicsCourt: return "You be the judge on AI ethics"
+        case .aiPairs: return "Match AI concept cards!"
         case .promptCraft: return "Rank prompts from worst to best"
         case .buzzwordBuster: return "Real AI term or total nonsense?"
         }
@@ -234,7 +234,7 @@ enum GameType: String, CaseIterable, Identifiable {
         switch self {
         case .speedRound: return "#FDCB6E"
         case .aiOrNot: return "#00CEC9"
-        case .ethicsCourt: return "#D63031"
+        case .aiPairs: return "#6C5CE7"
         case .promptCraft: return "#E17055"
         case .buzzwordBuster: return "#6C5CE7"
         }
@@ -244,7 +244,7 @@ enum GameType: String, CaseIterable, Identifiable {
         switch self {
         case .speedRound: return 40
         case .aiOrNot: return 30
-        case .ethicsCourt: return 50
+        case .aiPairs: return 50
         case .promptCraft: return 35
         case .buzzwordBuster: return 30
         }

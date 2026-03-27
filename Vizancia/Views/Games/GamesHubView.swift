@@ -7,7 +7,7 @@ struct GamesHubView: View {
     private let games: [(type: GameType, title: String, description: String, icon: String, color: Color)] = [
         (.speedRound, "Speed Round", "Answer as many questions as you can in 60 seconds!", "bolt.fill", .aiOrange),
         (.aiOrNot, "AI or Not?", "Guess if a statement was made by AI or a human.", "questionmark.circle.fill", .aiPrimary),
-        (.ethicsCourt, "Ethics Court", "Judge ethical dilemmas involving AI.", "building.columns.fill", .aiError),
+        (.aiPairs, "AI Pairs", "Match AI concept cards by answering questions!", "square.grid.3x3.fill", .aiPrimary),
         (.promptCraft, "Prompt Craft", "Pick the best prompt for each scenario.", "text.cursor", .aiSuccess),
         (.buzzwordBuster, "Buzzword Buster", "True or false: Is this AI term real or made up?", "textformat.abc", .aiSecondary)
     ]
@@ -43,7 +43,7 @@ struct GamesHubView: View {
         switch type {
         case .speedRound: SpeedRoundGame(user: user)
         case .aiOrNot: AIOrNotGame(user: user)
-        case .ethicsCourt: EthicsCourtGame(user: user)
+        case .aiPairs: AIPairsGame(user: user)
         case .promptCraft: PromptCraftGame(user: user)
         case .buzzwordBuster: BuzzwordBusterGame(user: user)
         }
