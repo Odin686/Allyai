@@ -13,14 +13,106 @@ struct PromptCraftGame: View {
     private let totalRounds = 8
     
     private let challenges: [(task: String, options: [String], best: String, explanation: String)] = [
-        ("You want a recipe for chocolate cake", ["Write a recipe for a moist chocolate cake with buttercream frosting, serves 8, with step-by-step instructions", "cake recipe", "make something yummy"], "Write a recipe for a moist chocolate cake with buttercream frosting, serves 8, with step-by-step instructions", "Specific details about type, frosting, servings, and format make this prompt most effective."),
-        ("You need a cover letter for a marketing job", ["Write a professional cover letter for a Digital Marketing Manager position at a tech startup, emphasizing 5 years of SEO and social media experience", "write cover letter", "help me get a job"], "Write a professional cover letter for a Digital Marketing Manager position at a tech startup, emphasizing 5 years of SEO and social media experience", "Specifying the role, company type, and relevant skills guides the AI to produce a tailored cover letter."),
-        ("You want to understand quantum computing", ["Explain quantum computing to a high school student using everyday analogies, in 200 words or less", "tell me about quantum stuff", "what is science"], "Explain quantum computing to a high school student using everyday analogies, in 200 words or less", "Specifying audience, approach (analogies), and length constraints produces the most useful explanation."),
-        ("You want help debugging code", ["I have a Python function that should return the sum of a list but returns None. Here's the code: [code]. What's wrong and how do I fix it?", "fix my code", "code broken help"], "I have a Python function that should return the sum of a list but returns None. Here's the code: [code]. What's wrong and how do I fix it?", "Including the language, expected vs actual behavior, and the actual code gives AI everything it needs to help."),
-        ("You need a bedtime story for a 5-year-old", ["Write a 3-minute bedtime story about a friendly dragon who learns to share, with a gentle moral and happy ending, suitable for a 5-year-old", "tell me a story", "something for kids"], "Write a 3-minute bedtime story about a friendly dragon who learns to share, with a gentle moral and happy ending, suitable for a 5-year-old", "Length, character, theme, moral, and age-appropriateness are all specified for the best result."),
-        ("You want to plan a trip to Japan", ["Create a 7-day Tokyo itinerary for a first-time visitor interested in food, temples, and anime culture, with daily schedules and budget tips", "tell me about Japan", "plan trip"], "Create a 7-day Tokyo itinerary for a first-time visitor interested in food, temples, and anime culture, with daily schedules and budget tips", "Duration, city, interests, experience level, and desired format make this prompt comprehensive."),
-        ("You need email subject lines for a sale", ["Generate 10 email subject lines for a 40% off summer sale at an online fashion store, targeting women 25-35, tone: excited but not spammy", "write some emails", "help with marketing"], "Generate 10 email subject lines for a 40% off summer sale at an online fashion store, targeting women 25-35, tone: excited but not spammy", "Quantity, discount, audience, and tone guidelines produce the most usable output."),
-        ("You want to learn about AI bias", ["Explain 3 real-world examples of AI bias in hiring, healthcare, and criminal justice, including what caused the bias and how it could be prevented, in bullet points", "what is AI bias", "bias stuff"], "Explain 3 real-world examples of AI bias in hiring, healthcare, and criminal justice, including what caused the bias and how it could be prevented, in bullet points", "Specifying domains, number of examples, and format produces structured, educational content.")
+        (
+            "You want a recipe for chocolate cake",
+            [
+                "Write a recipe for a moist chocolate cake with buttercream frosting, serves 8, with step-by-step instructions",
+                "Write a detailed chocolate cake recipe, making sure it's really good and tastes amazing with lots of chocolate flavor throughout",
+                "Write a chocolate cake recipe that's professional-grade, using advanced baking techniques and gourmet ingredients"
+            ],
+            "Write a recipe for a moist chocolate cake with buttercream frosting, serves 8, with step-by-step instructions",
+            "The best prompt specifies the type (moist), frosting (buttercream), servings (8), and format (step-by-step). The others sound detailed but lack actionable specifics."
+        ),
+        (
+            "You need a cover letter for a marketing job",
+            [
+                "Write a professional cover letter for a Digital Marketing Manager position at a tech startup, emphasizing 5 years of SEO and social media experience",
+                "Write a compelling and professional cover letter that will impress hiring managers and help me stand out from other candidates",
+                "Write a cover letter for a marketing role that highlights my strengths, achievements, and passion for the industry"
+            ],
+            "Write a professional cover letter for a Digital Marketing Manager position at a tech startup, emphasizing 5 years of SEO and social media experience",
+            "The best prompt names the exact role, company type, and specific skills. The others sound professional but are too generic for AI to tailor the output."
+        ),
+        (
+            "You want to understand quantum computing",
+            [
+                "Explain quantum computing to a high school student using everyday analogies, in 200 words or less",
+                "Give me a thorough and comprehensive explanation of quantum computing that covers all the important concepts clearly",
+                "Explain quantum computing in a way that's easy to understand, breaking down the complex topics into simpler terms"
+            ],
+            "Explain quantum computing to a high school student using everyday analogies, in 200 words or less",
+            "Specifying the audience (high school), method (analogies), and length (200 words) gives the AI clear constraints. The others ask for simplicity but don't define what level."
+        ),
+        (
+            "You want help debugging code",
+            [
+                "I have a Python function that should return the sum of a list but returns None. Here's the code: [code]. What's wrong and how do I fix it?",
+                "I'm having trouble with my code and it's not working correctly. Can you take a look and help me figure out what's going wrong?",
+                "Debug my Python code for me. It has a bug somewhere and I need you to find it and explain the solution step by step"
+            ],
+            "I have a Python function that should return the sum of a list but returns None. Here's the code: [code]. What's wrong and how do I fix it?",
+            "The best prompt includes the language, expected behavior, actual behavior, and the code itself. The others mention debugging but don't provide the AI enough context to help."
+        ),
+        (
+            "You need a bedtime story for a 5-year-old",
+            [
+                "Write a 3-minute bedtime story about a friendly dragon who learns to share, with a gentle moral and happy ending, suitable for a 5-year-old",
+                "Write a creative and engaging bedtime story for a young child that teaches an important life lesson in a fun way",
+                "Create a bedtime story with lovable characters and an imaginative plot that will help a child fall asleep peacefully"
+            ],
+            "Write a 3-minute bedtime story about a friendly dragon who learns to share, with a gentle moral and happy ending, suitable for a 5-year-old",
+            "The best prompt specifies length (3 min), character (dragon), theme (sharing), tone (gentle), ending (happy), and age (5). The others are pleasant but vague."
+        ),
+        (
+            "You want to plan a trip to Japan",
+            [
+                "Create a 7-day Tokyo itinerary for a first-time visitor interested in food, temples, and anime culture, with daily schedules and budget tips",
+                "Help me plan an amazing trip to Japan with all the best things to see, eat, and experience as a tourist",
+                "Plan a detailed Japan vacation covering the must-visit destinations, local cuisine recommendations, and cultural experiences"
+            ],
+            "Create a 7-day Tokyo itinerary for a first-time visitor interested in food, temples, and anime culture, with daily schedules and budget tips",
+            "The best prompt specifies duration (7 days), city (Tokyo), experience level (first-time), interests (food, temples, anime), and format (daily schedules + budget)."
+        ),
+        (
+            "You need email subject lines for a sale",
+            [
+                "Generate 10 email subject lines for a 40% off summer sale at an online fashion store, targeting women 25-35, tone: excited but not spammy",
+                "Write creative and attention-grabbing email subject lines for a promotional sale that will maximize open rates",
+                "Come up with email subject lines for our upcoming sale that are catchy, professional, and drive customer engagement"
+            ],
+            "Generate 10 email subject lines for a 40% off summer sale at an online fashion store, targeting women 25-35, tone: excited but not spammy",
+            "The best prompt specifies quantity (10), discount (40%), season (summer), business type, audience (women 25-35), and tone constraints."
+        ),
+        (
+            "You want to learn about AI bias",
+            [
+                "Explain 3 real-world examples of AI bias in hiring, healthcare, and criminal justice, including what caused the bias and how it could be prevented, in bullet points",
+                "Give me a comprehensive overview of AI bias, explaining why it happens, where it shows up, and what we can do about it",
+                "Write an in-depth analysis of bias in artificial intelligence systems, covering the key issues and potential solutions"
+            ],
+            "Explain 3 real-world examples of AI bias in hiring, healthcare, and criminal justice, including what caused the bias and how it could be prevented, in bullet points",
+            "The best prompt specifies the number of examples (3), domains (hiring, healthcare, justice), what to cover (cause + prevention), and format (bullet points)."
+        ),
+        (
+            "You want to write a LinkedIn post about your new job",
+            [
+                "Write a LinkedIn post announcing my new role as Senior Data Analyst at Google, thanking my previous team at IBM, tone: humble and professional, under 150 words",
+                "Help me write a LinkedIn post about starting a new job that will get lots of engagement and make a great impression on my network",
+                "Write a professional LinkedIn announcement about my career move that conveys excitement while maintaining a polished tone"
+            ],
+            "Write a LinkedIn post announcing my new role as Senior Data Analyst at Google, thanking my previous team at IBM, tone: humble and professional, under 150 words",
+            "The best prompt includes the role, company, what to mention (previous team), tone (humble, professional), and length constraint (150 words)."
+        ),
+        (
+            "You want AI to help you study for a biology exam",
+            [
+                "Create 15 flashcard-style Q&A pairs on cell biology for a college freshman, covering mitosis, organelles, and cell membrane transport",
+                "Help me study for my biology exam by creating comprehensive study materials that cover all the important topics",
+                "Generate study questions for biology that test my understanding of the key concepts and help me prepare for my exam"
+            ],
+            "Create 15 flashcard-style Q&A pairs on cell biology for a college freshman, covering mitosis, organelles, and cell membrane transport",
+            "The best prompt specifies quantity (15), format (flashcard Q&A), subject (cell biology), level (college freshman), and exact topics to cover."
+        )
     ]
     
     @State private var shuffled: [(task: String, options: [String], best: String, explanation: String)] = []
