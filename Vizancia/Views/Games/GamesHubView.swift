@@ -9,7 +9,8 @@ struct GamesHubView: View {
         (.aiOrNot, "AI or Not?", "Guess if a statement was made by AI or a human.", "questionmark.circle.fill", .aiPrimary),
         (.aiPairs, "AI Pairs", "Match AI concept cards by answering questions!", "square.grid.3x3.fill", .aiPrimary),
         (.promptCraft, "Prompt Craft", "Pick the best prompt for each scenario.", "text.cursor", .aiSuccess),
-        (.buzzwordBuster, "Buzzword Buster", "True or false: Is this AI term real or made up?", "textformat.abc", .aiSecondary)
+        (.buzzwordBuster, "Buzzword Buster", "True or false: Is this AI term real or made up?", "textformat.abc", .aiSecondary),
+        (.jargonMatch, "Jargon Match", "Match AI terms to definitions — fast!", "character.book.closed", .aiSecondary)
     ]
     
     var body: some View {
@@ -46,6 +47,7 @@ struct GamesHubView: View {
         case .aiPairs: AIPairsGame(user: user)
         case .promptCraft: PromptCraftGame(user: user)
         case .buzzwordBuster: BuzzwordBusterGame(user: user)
+        case .jargonMatch: JargonMatchGame(user: user)
         }
     }
 }

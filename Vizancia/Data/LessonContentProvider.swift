@@ -13,7 +13,10 @@ class LessonContentProvider {
         CategoryContent7.aiHealthcare,
         CategoryContent8.aiCreativeArts,
         CategoryContent9.aiHistory,
-        CategoryContent10.futureOfAI
+        CategoryContent10.futureOfAI,
+        CategoryContent11.aiVocabulary,
+        CategoryContent12.aiUnderHood,
+        CategoryContent13.aiTools
     ]
     
     func category(byId id: String) -> CategoryData? {

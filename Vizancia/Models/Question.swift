@@ -197,6 +197,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case aiPairs
     case promptCraft
     case buzzwordBuster
+    case jargonMatch
     
     var id: String { rawValue }
     
@@ -207,9 +208,10 @@ enum GameType: String, CaseIterable, Identifiable {
         case .aiPairs: return "AI Pairs"
         case .promptCraft: return "Prompt Craft"
         case .buzzwordBuster: return "Buzzword Buster"
+        case .jargonMatch: return "Jargon Match"
         }
     }
-    
+
     var icon: String {
         switch self {
         case .speedRound: return "bolt.fill"
@@ -217,9 +219,10 @@ enum GameType: String, CaseIterable, Identifiable {
         case .aiPairs: return "square.grid.3x3.fill"
         case .promptCraft: return "text.cursor"
         case .buzzwordBuster: return "target"
+        case .jargonMatch: return "character.book.closed"
         }
     }
-    
+
     var description: String {
         switch self {
         case .speedRound: return "20 rapid-fire questions in 5 seconds each!"
@@ -227,9 +230,10 @@ enum GameType: String, CaseIterable, Identifiable {
         case .aiPairs: return "Match AI concept cards!"
         case .promptCraft: return "Rank prompts from worst to best"
         case .buzzwordBuster: return "Real AI term or total nonsense?"
+        case .jargonMatch: return "Match AI terms to definitions — fast!"
         }
     }
-    
+
     var color: String {
         switch self {
         case .speedRound: return "#FDCB6E"
@@ -237,9 +241,10 @@ enum GameType: String, CaseIterable, Identifiable {
         case .aiPairs: return "#6C5CE7"
         case .promptCraft: return "#E17055"
         case .buzzwordBuster: return "#6C5CE7"
+        case .jargonMatch: return "#00CEC9"
         }
     }
-    
+
     var xpReward: Int {
         switch self {
         case .speedRound: return 40
@@ -247,6 +252,7 @@ enum GameType: String, CaseIterable, Identifiable {
         case .aiPairs: return 50
         case .promptCraft: return 35
         case .buzzwordBuster: return 30
+        case .jargonMatch: return 40
         }
     }
 }

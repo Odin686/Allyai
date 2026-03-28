@@ -145,6 +145,7 @@ struct HomeView: View {
     private let tracks: [(name: String, icon: String, ids: [String])] = [
         ("Foundations", "book.fill", ["ai_basics", "how_ai_learns", "ai_history"]),
         ("Skills", "hammer.fill", ["generative_ai", "prompt_engineering", "ai_at_work"]),
+        ("Deep Dive", "magnifyingglass", ["ai_vocabulary", "ai_under_hood", "ai_tools"]),
         ("Big Picture", "globe.americas.fill", ["ai_ethics", "ai_healthcare", "ai_creative_arts", "future_of_ai"]),
     ]
 
@@ -162,7 +163,7 @@ struct HomeView: View {
             user.categoryProgressList.first { $0.categoryId == cat.id }?.isComplete ?? false
         }.count
 
-        return VStack(alignment: .leading, spacing: 12) {
+        return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: track.icon)
                     .font(.system(size: 14))
@@ -175,25 +176,25 @@ struct HomeView: View {
             }
             .padding(.horizontal)
 
-            LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 14),
-                GridItem(.flexible(), spacing: 14)
-            ], spacing: 14) {
-                ForEach(categories) { category in
-                    let locked = isCategoryLocked(category)
-                    let progress = user.categoryProgressList.first { $0.categoryId == category.id }
-                    CategoryCard(
-                        category: category,
-                        progress: progress,
-                        isLocked: locked,
-                        unlockHint: unlockHint(for: category),
-                        categoryAccuracy: user.categoryAccuracy(for: category.id)
-                    ) {
-                        showCategoryDetail = category
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 14) {
+                    ForEach(categories) { category in
+                        let locked = isCategoryLocked(category)
+                        let progress = user.categoryProgressList.first { $0.categoryId == category.id }
+                        CategoryCard(
+                            category: category,
+                            progress: progress,
+                            isLocked: locked,
+                            unlockHint: unlockHint(for: category),
+                            categoryAccuracy: user.categoryAccuracy(for: category.id)
+                        ) {
+                            showCategoryDetail = category
+                        }
+                        .frame(width: 170)
                     }
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }
     }
     
