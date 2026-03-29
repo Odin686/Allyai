@@ -199,7 +199,7 @@ struct WhoMadeItGame: View {
     private func setupRound() {
         guard round < min(totalRounds, shuffledPairs.count) else { return }
         let correctCompany = shuffledPairs[round].company
-        var wrongCompanies = allCompanies.filter { $0 != correctCompany }.shuffled()
+        let wrongCompanies = allCompanies.filter { $0 != correctCompany }.shuffled()
         let distractors = Array(wrongCompanies.prefix(3))
         currentOptions = (distractors + [correctCompany]).shuffled()
     }
