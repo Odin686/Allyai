@@ -18,6 +18,10 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 20) {
+                    // Greeting
+                    greetingBanner
+                        .padding(.horizontal)
+
                     // Continue Learning
                     if let continueInfo = continueWhere {
                         continueCard(category: continueInfo.0, lesson: continueInfo.1)
@@ -47,6 +51,12 @@ struct HomeView: View {
                     if !user.missedQuestionIds.isEmpty {
                         practiceMistakesCard
                     }
+
+                    // Divider
+                    Rectangle()
+                        .fill(Color.aiTextSecondary.opacity(0.08))
+                        .frame(height: 1)
+                        .padding(.horizontal)
 
                     // Categories Grid
                     categoriesSection
@@ -79,6 +89,33 @@ struct HomeView: View {
         }
     }
     
+    // MARK: - Greeting
+    private var greetingBanner: some View {
+        let name = user.userName.isEmpty ? user.name : user.userName
+        let displayName = (name == "Learner" || name.isEmpty) ? "" : ", \(name)"
+        let greeting: String = {
+            let hour = Calendar.current.component(.hour, from: Date())
+            if hour < 12 { return "Good morning\(displayName)!" }
+            if hour < 17 { return "Good afternoon\(displayName)!" }
+            return "Good evening\(displayName)!"
+        }()
+
+        return HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(greeting)
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundColor(.aiTextPrimary)
+                Text("What shall we learn today?")
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundColor(.aiTextSecondary)
+            }
+            Spacer()
+            if user.currentStreak > 0 {
+                StreakBadge(streak: user.currentStreak)
+            }
+        }
+    }
+
     // MARK: - Header
     private var headerSection: some View {
         VStack(spacing: 12) {
@@ -88,11 +125,11 @@ struct HomeView: View {
                 level: user.currentLevel
             )
             .padding(.horizontal)
-            
+
             HStack(spacing: 16) {
                 HeartsDisplay(hearts: user.hearts, showTimer: true, heartsLastRefill: user.heartsLastRefill)
                 Spacer()
-                StreakBadge(streak: user.currentStreak)
+                LevelBadge(level: user.currentLevel, size: 28)
             }
             .padding(.horizontal)
         }
@@ -193,43 +230,46 @@ struct HomeView: View {
             continueCategory = category
             showContinueLesson = lesson
             HapticService.shared.mediumTap()
+            SoundService.shared.play(.whoosh)
         } label: {
-            HStack(spacing: 14) {
+            HStack(spacing: 16) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.aiSuccess.opacity(0.15))
-                        .frame(width: 50, height: 50)
+                    Circle()
+                        .fill(Color.white.opacity(0.2))
+                        .frame(width: 52, height: 52)
                     Image(systemName: "play.fill")
-                        .font(.title3)
-                        .foregroundColor(.aiSuccess)
+                        .font(.title2)
+                        .foregroundColor(.white)
                 }
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Continue Learning")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(.aiSuccess)
-                        .textCase(.uppercase)
-                        .tracking(0.5)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("CONTINUE")
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.8))
+                        .tracking(1)
                     Text(lesson.title)
-                        .font(.aiHeadline())
-                        .foregroundColor(.aiTextPrimary)
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
                         .lineLimit(1)
                     Text(category.name)
-                        .font(.aiCaption())
-                        .foregroundColor(.aiTextSecondary)
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.7))
                 }
                 Spacer()
-                Image(systemName: "arrow.right.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.aiSuccess)
+                Image(systemName: "arrow.right")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.8))
             }
-            .padding(16)
+            .padding(18)
             .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.aiSuccess.opacity(0.06))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.aiSuccess.opacity(0.2), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.aiPrimary, Color.aiPrimary.opacity(0.8), Color.aiGradientEnd],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
                     )
+                    .shadow(color: .aiPrimary.opacity(0.3), radius: 10, y: 5)
             )
         }
         .padding(.horizontal)

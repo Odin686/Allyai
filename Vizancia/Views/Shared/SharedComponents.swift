@@ -150,17 +150,22 @@ struct CategoryCard: View {
         completedLessons == totalLessons && totalLessons > 0
     }
 
+    @State private var isPressed = false
+
     var body: some View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     ZStack {
                         Circle()
-                            .fill(categoryColor.opacity(0.15))
+                            .fill(
+                                isLocked ? Color.aiTextSecondary.opacity(0.1) :
+                                LinearGradient(colors: [categoryColor, categoryColor.opacity(0.7)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                            )
                             .frame(width: 44, height: 44)
                         Image(systemName: category.icon)
                             .font(.system(size: 20))
-                            .foregroundColor(isLocked ? .aiTextSecondary : categoryColor)
+                            .foregroundColor(isLocked ? .aiTextSecondary : .white)
                     }
                     Spacer()
                     if isLocked {
@@ -230,10 +235,17 @@ struct CategoryCard: View {
                     )
             )
             .opacity(isLocked ? 0.6 : 1)
+            .scaleEffect(isPressed ? 0.96 : 1.0)
+            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isPressed)
         }
         .disabled(isLocked)
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in if !isLocked { isPressed = true } }
+                .onEnded { _ in isPressed = false }
+        )
     }
-    
+
     private var categoryColor: Color {
         switch category.colorName {
         case "aiPrimary": return .aiPrimary
