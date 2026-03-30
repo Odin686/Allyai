@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent2 {
     static let howAILearns = CategoryData(
         id: "how_ai_learns", name: "How AI Learns", icon: "graduationcap", colorName: "aiPurple",
-        description: "Find out how machines learn from examples and data",
+        description: "How does a machine learn from its mistakes? Find out",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 1,
         unlockRequirement: .completeCategory("ai_basics")
     )

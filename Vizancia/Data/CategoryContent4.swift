@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent4 {
     static let promptEngineering = CategoryData(
         id: "prompt_engineering", name: "Talking to AI", icon: "text.cursor", colorName: "aiOrange",
-        description: "Learn how to ask AI the right questions",
+        description: "The secret to getting amazing answers from AI",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 3,
         unlockRequirement: .completeCategory("generative_ai")
     )

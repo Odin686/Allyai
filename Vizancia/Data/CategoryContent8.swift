@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent8 {
     static let aiCreativeArts = CategoryData(
         id: "ai_creative_arts", name: "AI Art & Music", icon: "paintpalette", colorName: "aiIndigo",
-        description: "AI creating art, music, videos, and stories",
+        description: "Can a robot make a masterpiece? You decide",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 7,
         unlockRequirement: .completeCategoryMinimum("how_ai_learns")
     )

@@ -26,6 +26,7 @@ struct LessonView: View {
     @State private var showFunFact = false
     @State private var currentFunFact = ""
     @State private var showHeartGame = false
+    @State private var showIntro = true
     
     @State private var shuffledQuestions: [Question] = []
     private var questions: [Question] { shuffledQuestions.isEmpty ? lesson.questions : shuffledQuestions }
@@ -36,14 +37,18 @@ struct LessonView: View {
         NavigationStack {
             ZStack {
                 Color.aiBackground.ignoresSafeArea()
-                
+
+                if showIntro {
+                    lessonIntro
+                } else {
+
                 VStack(spacing: 0) {
                     // Top bar
                     topBar
-                    
+
                     // Progress bar
                     progressBar
-                    
+
                     // Question content
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 20) {
@@ -134,6 +139,8 @@ struct LessonView: View {
                     .allowsHitTesting(false)
                 }
             }
+
+            } // end else (not showIntro)
             .navigationBarHidden(true)
             .onAppear {
                 if shuffledQuestions.isEmpty {
@@ -170,6 +177,58 @@ struct LessonView: View {
         }
     }
     
+    // MARK: - Lesson Intro
+    private var lessonIntro: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            Image(systemName: category.icon)
+                .font(.system(size: 50))
+                .foregroundColor(.aiPrimary)
+
+            Text(lesson.title)
+                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .foregroundColor(.aiTextPrimary)
+                .multilineTextAlignment(.center)
+
+            Text(lesson.description)
+                .font(.aiBody())
+                .foregroundColor(.aiTextSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 30)
+
+            HStack(spacing: 20) {
+                Label("\(lesson.questionCount) questions", systemImage: "questionmark.circle")
+                Label("~\(max(lesson.questionCount / 2, 2)) min", systemImage: "clock")
+            }
+            .font(.system(size: 13, weight: .medium, design: .rounded))
+            .foregroundColor(.aiTextSecondary)
+
+            Spacer()
+
+            Button {
+                withAnimation(.spring(response: 0.3)) { showIntro = false }
+                SoundService.shared.play(.whoosh)
+                HapticService.shared.mediumTap()
+            } label: {
+                Text("Start Lesson")
+                    .font(.aiHeadline())
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(Color.aiPrimaryGradient))
+            }
+            .padding(.horizontal, 30)
+
+            Button { dismiss() } label: {
+                Text("Back")
+                    .font(.aiBody())
+                    .foregroundColor(.aiTextSecondary)
+            }
+            .padding(.bottom, 20)
+        }
+    }
+
     // MARK: - Top Bar
     private var topBar: some View {
         HStack {

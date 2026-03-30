@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent11 {
     static let aiVocabulary = CategoryData(
         id: "ai_vocabulary", name: "AI Words to Know", icon: "character.book.closed", colorName: "aiPrimary",
-        description: "Learn the language of AI — tokens, models, and more",
+        description: "Speak AI like a pro — learn the words that matter",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 10,
         unlockRequirement: .none
     )

@@ -66,6 +66,9 @@
 		A10057 /* WhoMadeItGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10057; };
 		A10058 /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10058; };
 		A10059 /* VizMascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10059; };
+		A10060 /* CategoryContent14.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10060; };
+		A10061 /* CategoryContent15.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10061; };
+		A10062 /* CategoryContent16.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10062; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,6 +132,9 @@
 		B10057 /* WhoMadeItGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhoMadeItGame.swift; sourceTree = "<group>"; };
 		B10058 /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
 		B10059 /* VizMascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizMascotView.swift; sourceTree = "<group>"; };
+		B10060 /* CategoryContent14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryContent14.swift; sourceTree = "<group>"; };
+		B10061 /* CategoryContent15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryContent15.swift; sourceTree = "<group>"; };
+		B10062 /* CategoryContent16.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryContent16.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +204,9 @@
 				B10019 /* CategoryContent9.swift */,
 				B10020 /* CategoryContent10.swift */,
 				B10048 /* FunFacts.swift */,
+				B10060 /* CategoryContent14.swift */,
+				B10061 /* CategoryContent15.swift */,
+				B10062 /* CategoryContent16.swift */,
 				B10050 /* CategoryContent11.swift */,
 				B10051 /* CategoryContent12.swift */,
 				B10052 /* CategoryContent13.swift */,
@@ -454,6 +463,9 @@
 				A10057 /* WhoMadeItGame.swift in Sources */,
 				A10058 /* LearnView.swift in Sources */,
 				A10059 /* VizMascotView.swift in Sources */,
+				A10060 /* CategoryContent14.swift in Sources */,
+				A10061 /* CategoryContent15.swift in Sources */,
+				A10062 /* CategoryContent16.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

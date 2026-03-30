@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent1 {
     static let aiBasics = CategoryData(
         id: "ai_basics", name: "What Is AI?", icon: "brain", colorName: "aiBlue",
-        description: "Discover what artificial intelligence is and how it works",
+        description: "Ever wonder what makes AI tick? Start your journey here",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 0,
         unlockRequirement: .none
     )

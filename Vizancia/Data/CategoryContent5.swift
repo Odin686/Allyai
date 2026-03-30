@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent5 {
     static let aiEthics = CategoryData(
         id: "ai_ethics", name: "AI Right & Wrong", icon: "shield.checkered", colorName: "aiRed",
-        description: "Fairness, safety, and making good choices with AI",
+        description: "Can AI be unfair? How do we keep it in check?",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 4,
         unlockRequirement: .completeCategoryMinimum("how_ai_learns")
     )

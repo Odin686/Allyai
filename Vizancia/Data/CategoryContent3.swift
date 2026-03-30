@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent3 {
     static let generativeAI = CategoryData(
         id: "generative_ai", name: "AI That Creates", icon: "sparkles", colorName: "aiPink",
-        description: "How AI makes text, images, and more from scratch",
+        description: "AI that writes, draws, and creates — how does it do it?",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 2,
         unlockRequirement: .completeCategory("how_ai_learns")
     )

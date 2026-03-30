@@ -10,6 +10,7 @@ struct LearnView: View {
         ("Start Here", "star.fill", ["ai_basics", "how_ai_learns", "ai_history"]),
         ("Level Up", "arrow.up.circle.fill", ["generative_ai", "prompt_engineering", "ai_at_work"]),
         ("Go Deeper", "magnifyingglass", ["ai_vocabulary", "ai_under_hood", "ai_tools"]),
+        ("Real World", "person.2.fill", ["ai_practice", "ai_safety_you", "build_with_ai"]),
         ("Explore", "globe.americas.fill", ["ai_ethics", "ai_healthcare", "ai_creative_arts", "future_of_ai"]),
     ]
 
@@ -17,6 +18,12 @@ struct LearnView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
+                    // Today's Pick
+                    if let todaysPick = todaysPickCategory {
+                        todaysPickCard(todaysPick)
+                    }
+
+                    // Tracks
                     ForEach(tracks, id: \.name) { track in
                         trackSection(track)
                     }
@@ -33,6 +40,83 @@ struct LearnView: View {
         }
     }
 
+    // MARK: - Today's Pick
+    private var todaysPickCategory: CategoryData? {
+        let unlocked = provider.allCategories.filter { !isCategoryLocked($0) }
+        let incomplete = unlocked.filter { cat in
+            !(user.categoryProgressList.first { $0.categoryId == cat.id }?.isComplete ?? false)
+        }
+        guard !incomplete.isEmpty else { return nil }
+        let dayIndex = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? 0
+        return incomplete[dayIndex % incomplete.count]
+    }
+
+    private func todaysPickCard(_ category: CategoryData) -> some View {
+        Button { showCategoryDetail = category } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("TODAY'S PICK")
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.7))
+                        .tracking(1.5)
+                    Spacer()
+                    Image(systemName: "sparkles")
+                        .foregroundColor(.white.opacity(0.6))
+                }
+
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.white.opacity(0.2))
+                            .frame(width: 48, height: 48)
+                        Image(systemName: category.icon)
+                            .font(.system(size: 22))
+                            .foregroundColor(.white)
+                    }
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(category.name)
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                        Text(category.description)
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundColor(.white.opacity(0.8))
+                            .lineLimit(2)
+                    }
+                }
+
+                HStack {
+                    let prog = user.categoryProgressList.first { $0.categoryId == category.id }
+                    let done = prog?.completedLessonIds.count ?? 0
+                    let total = category.lessons.count
+                    Text("\(done)/\(total) lessons")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.7))
+                    Spacer()
+                    Text("Start Learning")
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
+            .padding(18)
+            .background(
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.aiPrimary, Color.aiGradientEnd],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .shadow(color: .aiPrimary.opacity(0.25), radius: 10, y: 5)
+            )
+        }
+        .padding(.horizontal)
+    }
+
+    // MARK: - Track Section
     private func trackSection(_ track: (name: String, icon: String, ids: [String])) -> some View {
         let categories = track.ids.compactMap { id in provider.category(byId: id) }
         let completedCount = categories.filter { cat in
@@ -83,6 +167,7 @@ struct LearnView: View {
         }
     }
 
+    // MARK: - Helpers
     private func isCategoryLocked(_ category: CategoryData) -> Bool {
         switch category.unlockRequirement {
         case .none:

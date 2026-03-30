@@ -3,7 +3,7 @@ import Foundation
 struct CategoryContent13 {
     static let aiTools = CategoryData(
         id: "ai_tools", name: "Cool AI Tools", icon: "wrench.and.screwdriver", colorName: "aiGreen",
-        description: "The apps and tools powered by AI today",
+        description: "Meet the coolest AI tools you can use right now",
         lessons: [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6], order: 12,
         unlockRequirement: .completeCategoryMinimum("ai_basics")
     )
