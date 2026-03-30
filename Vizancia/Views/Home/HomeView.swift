@@ -2,53 +2,42 @@ import SwiftUI
 
 struct HomeView: View {
     @Bindable var user: UserProfile
-    @State private var showPracticeMistakes = false
     @State private var showDailyChallenge = false
+    @State private var showPracticeMistakes = false
     @State private var showQuickPlay: LessonData?
     @State private var quickPlayCategory: CategoryData?
     @State private var showContinueLesson: LessonData?
     @State private var continueCategory: CategoryData?
-    @State private var showCategoryDetail: CategoryData?
 
     private let provider = LessonContentProvider.shared
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 18) {
-                    // Greeting
-                    greetingBanner
+                VStack(spacing: 20) {
+                    // Greeting + inline stats
+                    greetingSection
                         .padding(.horizontal)
 
-                    // Continue Learning
+                    // Continue Learning (hero)
                     if let continueInfo = continueWhere {
                         continueCard(category: continueInfo.0, lesson: continueInfo.1)
                     }
 
-                    // Stats Row
-                    statsRow
+                    // Daily Goal
+                    DailyGoalWidget(user: user)
                         .padding(.horizontal)
 
-                    // Action Cards
-                    HStack(spacing: 12) {
-                        DailyGoalWidget(user: user)
-                        if !user.hasCompletedDailyChallenge {
-                            dailyChallengeCompact
-                        }
+                    // Quick Play or Daily Challenge
+                    if !user.hasCompletedDailyChallenge {
+                        dailyChallengeCard
+                    } else {
+                        quickPlayButton
                     }
-                    .padding(.horizontal)
 
-                    // Quick Play
-                    quickPlayButton
-
-                    // Practice Mistakes
+                    // Practice Mistakes (only if needed)
                     if !user.missedQuestionIds.isEmpty {
                         practiceMistakesCard
-                    }
-
-                    // Recommended
-                    if let recommended = recommendedCategory {
-                        recommendedCard(recommended)
                     }
                 }
                 .padding(.bottom, 30)
@@ -56,11 +45,11 @@ struct HomeView: View {
             .background(Color.aiBackground.ignoresSafeArea())
             .navigationTitle("Vizancia")
             .navigationBarTitleDisplayMode(.large)
-            .fullScreenCover(isPresented: $showPracticeMistakes) {
-                PracticeMistakesView(user: user)
-            }
             .fullScreenCover(isPresented: $showDailyChallenge) {
                 DailyChallengeView(user: user)
+            }
+            .fullScreenCover(isPresented: $showPracticeMistakes) {
+                PracticeMistakesView(user: user)
             }
             .fullScreenCover(item: $showQuickPlay) { lesson in
                 if let cat = quickPlayCategory {
@@ -72,14 +61,11 @@ struct HomeView: View {
                     LessonView(user: user, lesson: lesson, category: cat)
                 }
             }
-            .sheet(item: $showCategoryDetail) { cat in
-                CategoryDetailView(user: user, category: cat)
-            }
         }
     }
 
-    // MARK: - Greeting
-    private var greetingBanner: some View {
+    // MARK: - Greeting + Stats
+    private var greetingSection: some View {
         let name = user.userName.isEmpty ? user.name : user.userName
         let displayName = (name == "Learner" || name.isEmpty) ? "" : ", \(name)"
         let greeting: String = {
@@ -89,52 +75,30 @@ struct HomeView: View {
             return "Good evening\(displayName)!"
         }()
 
-        return HStack {
-            VStack(alignment: .leading, spacing: 2) {
+        return VStack(spacing: 12) {
+            HStack {
                 Text(greeting)
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                     .foregroundColor(.aiTextPrimary)
-                Text("What shall we learn today?")
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(.aiTextSecondary)
+                Spacer()
+                if user.currentStreak > 0 {
+                    StreakBadge(streak: user.currentStreak)
+                }
             }
-            Spacer()
-            if user.currentStreak > 0 {
-                StreakBadge(streak: user.currentStreak)
+
+            // Compact stats
+            HStack(spacing: 0) {
+                Label("\(user.totalXP) XP", systemImage: "star.fill")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(.aiPrimary)
+                Spacer()
+                Label("Lvl \(user.currentLevel)", systemImage: "trophy.fill")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(.aiWarning)
+                Spacer()
+                HeartsDisplay(hearts: user.hearts, showTimer: true, heartsLastRefill: user.heartsLastRefill)
             }
         }
-    }
-
-    // MARK: - Stats Row
-    private var statsRow: some View {
-        HStack(spacing: 0) {
-            statItem(value: "\(user.totalXP)", label: "XP", icon: "star.fill", color: .aiPrimary)
-            Divider().frame(height: 30)
-            statItem(value: "\(user.currentLevel)", label: "Level", icon: "trophy.fill", color: .aiWarning)
-            Divider().frame(height: 30)
-            statItem(value: "\(user.totalLessonsCompleted)", label: "Lessons", icon: "book.fill", color: .aiSuccess)
-            Divider().frame(height: 30)
-            HeartsDisplay(hearts: user.hearts, showTimer: true, heartsLastRefill: user.heartsLastRefill)
-                .frame(maxWidth: .infinity)
-        }
-        .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(Color.aiCard)
-                .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
-        )
-    }
-
-    private func statItem(value: String, label: String, icon: String, color: Color) -> some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(.system(size: 18, weight: .bold, design: .rounded))
-                .foregroundColor(.aiTextPrimary)
-            Text(label)
-                .font(.system(size: 10, weight: .medium, design: .rounded))
-                .foregroundColor(.aiTextSecondary)
-        }
-        .frame(maxWidth: .infinity)
     }
 
     // MARK: - Continue Learning
@@ -203,22 +167,32 @@ struct HomeView: View {
         .padding(.horizontal)
     }
 
-    // MARK: - Daily Challenge Compact
-    private var dailyChallengeCompact: some View {
+    // MARK: - Daily Challenge
+    private var dailyChallengeCard: some View {
         Button { showDailyChallenge = true } label: {
-            VStack(spacing: 8) {
-                Image(systemName: "star.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(.aiWarning)
-                Text("Daily")
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .foregroundColor(.aiTextPrimary)
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.aiWarning.opacity(0.15))
+                        .frame(width: 50, height: 50)
+                    Image(systemName: "star.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(.aiWarning)
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Daily Challenge")
+                        .font(.aiHeadline())
+                        .foregroundColor(.aiTextPrimary)
+                    Text("Answer today's question for bonus XP!")
+                        .font(.aiCaption())
+                        .foregroundColor(.aiTextSecondary)
+                }
+                Spacer()
                 Text("+25 XP")
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundColor(.aiWarning)
             }
-            .frame(width: 80)
-            .padding(.vertical, 12)
+            .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.aiCard)
@@ -229,35 +203,32 @@ struct HomeView: View {
                     .stroke(Color.aiWarning.opacity(0.3), lineWidth: 1)
             )
         }
+        .padding(.horizontal)
     }
 
     // MARK: - Quick Play
     private var quickPlayButton: some View {
-        Button {
-            startQuickPlay()
-        } label: {
+        Button { startQuickPlay() } label: {
             HStack(spacing: 12) {
-                Image(systemName: "play.circle.fill")
-                    .font(.system(size: 32))
-                    .foregroundColor(.white)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Quick Play")
-                        .font(.system(size: 16, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                    Text("Jump into a random lesson")
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundColor(.white.opacity(0.8))
-                }
-                Spacer()
                 Image(systemName: "shuffle")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.7))
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.aiPrimary)
+                Text("Quick Play — Random Lesson")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(.aiPrimary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.aiTextSecondary)
             }
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.aiPrimaryGradient)
-                    .shadow(color: .aiPrimary.opacity(0.3), radius: 8, y: 4)
+                    .fill(Color.aiPrimary.opacity(0.06))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.aiPrimary.opacity(0.15), lineWidth: 1)
+                    )
             )
         }
         .padding(.horizontal)
@@ -270,72 +241,11 @@ struct HomeView: View {
         let incomplete = cat.lessons.first { lesson in
             !(progress?.completedLessonIds.contains(lesson.id) ?? false)
         }
-        let lesson = incomplete ?? cat.lessons.randomElement()
-        guard let selectedLesson = lesson else { return }
+        guard let selectedLesson = incomplete ?? cat.lessons.randomElement() else { return }
         quickPlayCategory = cat
         showQuickPlay = selectedLesson
         HapticService.shared.mediumTap()
         SoundService.shared.play(.whoosh)
-    }
-
-    // MARK: - Recommended
-    private var recommendedCategory: CategoryData? {
-        if user.totalLessonsCompleted == 0 {
-            switch user.experienceLevel {
-            case .beginner: return provider.category(byId: "ai_basics")
-            case .familiar: return provider.category(byId: "generative_ai")
-            case .regular: return provider.category(byId: "prompt_engineering")
-            case .builder: return provider.category(byId: "ai_ethics")
-            }
-        }
-        for cat in provider.allCategories {
-            if !isCategoryLocked(cat) {
-                let progress = user.categoryProgressList.first { $0.categoryId == cat.id }
-                if !(progress?.isComplete ?? false) {
-                    return cat
-                }
-            }
-        }
-        return nil
-    }
-
-    private func recommendedCard(_ category: CategoryData) -> some View {
-        Button { showCategoryDetail = category } label: {
-            HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.aiPrimary.opacity(0.15))
-                        .frame(width: 50, height: 50)
-                    Image(systemName: category.icon)
-                        .font(.title2)
-                        .foregroundColor(.aiPrimary)
-                }
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Recommended for You")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(.aiPrimary)
-                        .textCase(.uppercase)
-                        .tracking(0.5)
-                    Text(category.name)
-                        .font(.aiHeadline())
-                        .foregroundColor(.aiTextPrimary)
-                }
-                Spacer()
-                Image(systemName: "arrow.right.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.aiPrimary)
-            }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.aiPrimary.opacity(0.06))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.aiPrimary.opacity(0.2), lineWidth: 1)
-                    )
-            )
-        }
-        .padding(.horizontal)
     }
 
     // MARK: - Practice Mistakes

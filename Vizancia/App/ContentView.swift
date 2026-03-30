@@ -24,9 +24,9 @@ struct ContentView: View {
                 }
                 .tag(2)
 
-            ProfileView(user: user)
+            ProgressDashboardView(user: user)
                 .tabItem {
-                    Label("Profile", systemImage: "person.fill")
+                    Label("Progress", systemImage: "chart.bar.fill")
                 }
                 .tag(3)
         }
