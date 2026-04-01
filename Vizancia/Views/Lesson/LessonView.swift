@@ -155,12 +155,15 @@ struct LessonView: View {
             }
             .alert("No Hearts Left!", isPresented: $showNoHeartsAlert) {
                 Button("Play for Hearts") { showHeartGame = true }
-                Button("Keep Trying", role: .cancel) { }
                 Button("Leave Lesson", role: .destructive) { dismiss() }
             } message: {
-                Text("Score 3+ in Jargon Match to earn a heart back!")
+                Text("You've run out of hearts. Play a quick game to earn one back, or come back tomorrow when they refill!")
             }
-            .fullScreenCover(isPresented: $showHeartGame) {
+            .fullScreenCover(isPresented: $showHeartGame, onDismiss: {
+                if user.hearts <= 0 {
+                    showNoHeartsAlert = true
+                }
+            }) {
                 HeartEarnGameView(user: user)
             }
         }
@@ -369,7 +372,7 @@ struct LessonView: View {
                             .fill(selectedAnswer.isEmpty && !showingResult ? AnyShapeStyle(Color.aiPrimary.opacity(0.4)) : AnyShapeStyle(Color.aiPrimaryGradient))
                     )
             }
-            .disabled(selectedAnswer.isEmpty && !showingResult)
+            .disabled((selectedAnswer.isEmpty && !showingResult) || user.hearts <= 0)
             .padding(.horizontal)
             .padding(.bottom, 10)
         }
