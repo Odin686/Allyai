@@ -4,12 +4,15 @@ struct HomeView: View {
     @Bindable var user: UserProfile
     @State private var showDailyChallenge = false
     @State private var showPracticeMistakes = false
-    @State private var showQuickPlay: LessonData?
-    @State private var quickPlayCategory: CategoryData?
-    @State private var showContinueLesson: LessonData?
-    @State private var continueCategory: CategoryData?
+    @State private var showLesson: LessonLaunch?
 
     private let provider = LessonContentProvider.shared
+
+    struct LessonLaunch: Identifiable {
+        let id = UUID()
+        let lesson: LessonData
+        let category: CategoryData
+    }
 
     var body: some View {
         NavigationStack {
@@ -51,15 +54,8 @@ struct HomeView: View {
             .fullScreenCover(isPresented: $showPracticeMistakes) {
                 PracticeMistakesView(user: user)
             }
-            .fullScreenCover(item: $showQuickPlay) { lesson in
-                if let cat = quickPlayCategory {
-                    LessonView(user: user, lesson: lesson, category: cat)
-                }
-            }
-            .fullScreenCover(item: $showContinueLesson) { lesson in
-                if let cat = continueCategory {
-                    LessonView(user: user, lesson: lesson, category: cat)
-                }
+            .fullScreenCover(item: $showLesson) { launch in
+                LessonView(user: user, lesson: launch.lesson, category: launch.category)
             }
         }
     }
@@ -118,8 +114,7 @@ struct HomeView: View {
 
     private func continueCard(category: CategoryData, lesson: LessonData) -> some View {
         Button {
-            continueCategory = category
-            showContinueLesson = lesson
+            showLesson = LessonLaunch(lesson: lesson, category: category)
             HapticService.shared.mediumTap()
             SoundService.shared.play(.whoosh)
         } label: {
@@ -241,8 +236,7 @@ struct HomeView: View {
             !(progress?.completedLessonIds.contains(lesson.id) ?? false)
         }
         guard let selectedLesson = incomplete ?? cat.lessons.randomElement() else { return }
-        quickPlayCategory = cat
-        showQuickPlay = selectedLesson
+        showLesson = LessonLaunch(lesson: selectedLesson, category: cat)
         HapticService.shared.mediumTap()
         SoundService.shared.play(.whoosh)
     }

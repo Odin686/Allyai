@@ -145,6 +145,24 @@ struct LessonView: View {
             .onAppear {
                 if shuffledQuestions.isEmpty {
                     shuffledQuestions = buildQuestionList()
+                    // Resume if we have saved progress for this lesson
+                    if user.inProgressLessonId == lesson.id && user.inProgressQuestionIndex > 0 {
+                        currentIndex = min(user.inProgressQuestionIndex, questions.count - 1)
+                        correctCount = user.inProgressCorrectCount
+                        xpEarned = user.inProgressXPEarned
+                        showIntro = false
+                    }
+                }
+            }
+            .onDisappear {
+                // Save progress if lesson not completed
+                if !showLessonComplete && currentIndex > 0 {
+                    user.saveLessonProgress(
+                        lessonId: lesson.id,
+                        questionIndex: currentIndex,
+                        correctCount: correctCount,
+                        xpEarned: xpEarned
+                    )
                 }
             }
             .fullScreenCover(isPresented: $showLessonComplete) {
@@ -541,6 +559,7 @@ struct LessonView: View {
         user.lastActiveDate = Date()
         StreakService.shared.updateStreak(for: user)
         
+        user.clearLessonProgress()
         showLessonComplete = true
     }
 }
