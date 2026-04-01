@@ -443,7 +443,6 @@ struct LessonView: View {
                     }
                 }
             } else {
-                SoundService.shared.play(.whoosh)
                 withAnimation(.easeInOut(duration: 0.25)) {
                     currentIndex = nextIndex
                     resetQuestionState()
