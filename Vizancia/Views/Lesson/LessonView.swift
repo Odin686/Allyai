@@ -226,8 +226,7 @@ struct LessonView: View {
 
             Button {
                 withAnimation(.spring(response: 0.3)) { showIntro = false }
-                SoundService.shared.play(.whoosh)
-                HapticService.shared.mediumTap()
+                HapticService.shared.lightTap()
             } label: {
                 Text("Start Lesson")
                     .font(.aiHeadline())

@@ -116,7 +116,6 @@ struct HomeView: View {
         Button {
             showLesson = LessonLaunch(lesson: lesson, category: category)
             HapticService.shared.mediumTap()
-            SoundService.shared.play(.whoosh)
         } label: {
             HStack(spacing: 16) {
                 ZStack {
@@ -238,7 +237,6 @@ struct HomeView: View {
         guard let selectedLesson = incomplete ?? cat.lessons.randomElement() else { return }
         showLesson = LessonLaunch(lesson: selectedLesson, category: cat)
         HapticService.shared.mediumTap()
-        SoundService.shared.play(.whoosh)
     }
 
     // MARK: - Practice Mistakes
