@@ -356,7 +356,9 @@ struct LessonView: View {
         VStack {
             Divider()
             Button {
-                if showingResult {
+                if user.hearts <= 0 && !showingResult {
+                    showNoHeartsAlert = true
+                } else if showingResult {
                     moveToNext()
                 } else {
                     checkAnswer()
@@ -372,7 +374,7 @@ struct LessonView: View {
                             .fill(selectedAnswer.isEmpty && !showingResult ? AnyShapeStyle(Color.aiPrimary.opacity(0.4)) : AnyShapeStyle(Color.aiPrimaryGradient))
                     )
             }
-            .disabled((selectedAnswer.isEmpty && !showingResult) || user.hearts <= 0)
+            .disabled(selectedAnswer.isEmpty && !showingResult)
             .padding(.horizontal)
             .padding(.bottom, 10)
         }
