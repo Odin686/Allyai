@@ -146,20 +146,27 @@ struct FallingWordsGame: View {
         currentCategory = set.category
         fallingWords = []
 
+        // More wrong words as rounds progress (harder)
+        let wrongCount = min(3 + currentSetIndex, set.wrong.count)
         var wordsToSpawn: [(String, Bool)] = []
         for w in set.correct { wordsToSpawn.append((w, true)) }
-        for w in set.wrong.prefix(3) { wordsToSpawn.append((w, false)) }
+        for w in set.wrong.prefix(wrongCount) { wordsToSpawn.append((w, false)) }
         wordsToSpawn.shuffle()
+
+        // Faster spawn rate as rounds progress
+        let spawnInterval = max(0.4, 0.8 - Double(currentSetIndex) * 0.1)
+        // Faster fall speed as rounds progress
+        let fallSpeed = 1.2 + Double(currentSetIndex) * 0.4
 
         let screenWidth = UIScreen.main.bounds.width
         var spawnIndex = 0
 
         spawnTimer?.invalidate()
-        spawnTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: true) { _ in
+        spawnTimer = Timer.scheduledTimer(withTimeInterval: spawnInterval, repeats: true) { _ in
             guard spawnIndex < wordsToSpawn.count else {
                 spawnTimer?.invalidate()
                 // Wait for remaining words to fall, then next category
-                DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     currentSetIndex += 1
                     if lives > 0 { loadNextCategory() } else { endGame() }
                 }
@@ -181,7 +188,7 @@ struct FallingWordsGame: View {
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
             for i in fallingWords.indices {
                 if !fallingWords[i].tapped {
-                    fallingWords[i].y += 1.2
+                    fallingWords[i].y += fallSpeed
                 }
                 // Fell off screen
                 if fallingWords[i].y > UIScreen.main.bounds.height && !fallingWords[i].tapped {

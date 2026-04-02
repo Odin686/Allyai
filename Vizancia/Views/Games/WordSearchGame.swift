@@ -21,7 +21,10 @@ struct WordSearchGame: View {
     private let wordSets: [[String]] = [
         ["TOKEN", "MODEL", "TRAIN", "AGENT", "LAYER"],
         ["EPOCH", "BATCH", "BIAS", "NEURAL", "CLOUD"],
-        ["LEARN", "DATA", "PROMPT", "SCALE", "EMBED"]
+        ["LEARN", "DATA", "PROMPT", "SCALE", "EMBED"],
+        ["WEIGHT", "LOSS", "NODE", "TENSOR", "INPUT"],
+        ["PIXEL", "LABEL", "MASK", "VECTOR", "CHAIN"],
+        ["BERT", "LLAMA", "ALIGN", "FUSE", "DEPTH"],
     ]
 
     var body: some View {
@@ -36,7 +39,7 @@ struct WordSearchGame: View {
                     rules: [
                         "Find 5 hidden AI terms in the grid",
                         "Tap letters in sequence to spell a word",
-                        "Words can be horizontal or vertical",
+                        "Words can be horizontal, vertical, or diagonal",
                         "Find all words before time runs out!"
                     ]
                 ) { showTutorial = false; startGame() }
@@ -235,8 +238,8 @@ struct WordSearchGame: View {
             placeWord(word, in: &g)
         }
 
-        // Fill empty cells with random letters
-        let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        // Fill empty cells with deceptive letters (weighted toward letters common in AI terms)
+        let letters = "AADDEEIILLMNNOORRSTTAEIONTLRM"
         for r in 0..<gridSize {
             for c in 0..<gridSize {
                 if g[r][c] == " " {
@@ -252,32 +255,32 @@ struct WordSearchGame: View {
         let chars = Array(word)
         let len = chars.count
 
-        // Try random placements up to 100 times
-        for _ in 0..<100 {
-            let horizontal = Bool.random()
+        // Directions: horizontal, vertical, diagonal down-right, diagonal down-left
+        let directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
 
-            if horizontal {
-                let row = Int.random(in: 0..<gridSize)
-                let col = Int.random(in: 0...(gridSize - len))
-                if canPlace(chars, in: grid, row: row, col: col, dRow: 0, dCol: 1) {
-                    for i in 0..<len {
-                        grid[row][col + i] = chars[i]
-                    }
-                    return
+        // Also try reversed words for extra difficulty
+        let variants: [[Character]] = [chars, chars.reversed()]
+
+        for _ in 0..<200 {
+            let variant = variants.randomElement()!
+            let dir = directions.randomElement()!
+            let row = Int.random(in: 0..<gridSize)
+            let col = Int.random(in: 0..<gridSize)
+
+            let endRow = row + (len - 1) * dir.0
+            let endCol = col + (len - 1) * dir.1
+
+            guard endRow >= 0 && endRow < gridSize && endCol >= 0 && endCol < gridSize else { continue }
+
+            if canPlace(variant, in: grid, row: row, col: col, dRow: dir.0, dCol: dir.1) {
+                for i in 0..<len {
+                    grid[row + i * dir.0][col + i * dir.1] = variant[i]
                 }
-            } else {
-                let row = Int.random(in: 0...(gridSize - len))
-                let col = Int.random(in: 0..<gridSize)
-                if canPlace(chars, in: grid, row: row, col: col, dRow: 1, dCol: 0) {
-                    for i in 0..<len {
-                        grid[row + i][col] = chars[i]
-                    }
-                    return
-                }
+                return
             }
         }
 
-        // Fallback: force place horizontally in first available row
+        // Fallback: force place horizontally
         for row in 0..<gridSize {
             for col in 0...(gridSize - len) {
                 if canPlace(chars, in: grid, row: row, col: col, dRow: 0, dCol: 1) {
@@ -352,10 +355,10 @@ struct WordSearchGame: View {
         guard let first = selectedPositions.first else { return true }
 
         if selectedPositions.count == 1 {
-            // Second letter: must be adjacent horizontally or vertically
+            // Second letter: must be adjacent horizontally, vertically, or diagonally
             let dr = abs(row - first.0)
             let dc = abs(col - first.1)
-            return (dr == 0 && dc == 1) || (dr == 1 && dc == 0)
+            return dr <= 1 && dc <= 1 && (dr + dc) > 0
         }
 
         // Determine direction from existing selections
