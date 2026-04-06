@@ -68,6 +68,8 @@
 		A10064 /* FallingWordsGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10064; };
 		A10065 /* MemoryGridGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10065; };
 		A10066 /* WordSearchGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10066; };
+		A10067 /* GlossaryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10067; };
+		A10068 /* GlossaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10068; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,6 +135,8 @@
 		B10064 /* FallingWordsGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallingWordsGame.swift; sourceTree = "<group>"; };
 		B10065 /* MemoryGridGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGridGame.swift; sourceTree = "<group>"; };
 		B10066 /* WordSearchGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSearchGame.swift; sourceTree = "<group>"; };
+		B10067 /* GlossaryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryData.swift; sourceTree = "<group>"; };
+		B10068 /* GlossaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +212,7 @@
 				B10050 /* CategoryContent11.swift */,
 				B10051 /* CategoryContent12.swift */,
 				B10052 /* CategoryContent13.swift */,
+				B10067 /* GlossaryData.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -296,6 +301,7 @@
 			isa = PBXGroup;
 			children = (
 				B10037 /* ProgressDashboardView.swift */,
+				B10068 /* GlossaryView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -462,6 +468,8 @@
 				A10064 /* FallingWordsGame.swift in Sources */,
 				A10065 /* MemoryGridGame.swift in Sources */,
 				A10066 /* WordSearchGame.swift in Sources */,
+				A10067 /* GlossaryData.swift in Sources */,
+				A10068 /* GlossaryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

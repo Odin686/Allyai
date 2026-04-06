@@ -3,6 +3,7 @@ import SwiftUI
 struct ProgressDashboardView: View {
     @Bindable var user: UserProfile
     @State private var showSettings = false
+    @State private var showGlossary = false
 
     private let provider = LessonContentProvider.shared
 
@@ -31,6 +32,9 @@ struct ProgressDashboardView: View {
                     // Achievements
                     achievementsSection
 
+                    // Glossary
+                    glossaryCard
+
                     // Activity
                     streakCalendar
                 }
@@ -48,6 +52,9 @@ struct ProgressDashboardView: View {
             }
             .sheet(isPresented: $showSettings) {
                 SettingsSheet(user: user)
+            }
+            .sheet(isPresented: $showGlossary) {
+                GlossaryView()
             }
         }
     }
@@ -175,6 +182,39 @@ struct ProgressDashboardView: View {
                 .padding(.horizontal)
             }
         }
+    }
+
+    // MARK: - Glossary Card
+    private var glossaryCard: some View {
+        Button { showGlossary = true } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "character.book.closed.fill")
+                    .font(.system(size: 22))
+                    .foregroundColor(.aiPrimary)
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(Color.aiPrimary.opacity(0.12)))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("AI Glossary")
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .foregroundColor(.aiTextPrimary)
+                    Text("\(GlossaryData.entries.count) key AI terms and definitions")
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .foregroundColor(.aiTextSecondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.aiTextSecondary.opacity(0.5))
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.aiCard)
+                    .shadow(color: .black.opacity(0.04), radius: 6, y: 3)
+            )
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal)
     }
 
     // MARK: - Streak Calendar
