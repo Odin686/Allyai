@@ -1,4 +1,5 @@
 import SwiftUI
+import GameKit
 
 struct CommunityView: View {
     @Bindable var user: UserProfile
