@@ -49,7 +49,7 @@ class DuelService: ObservableObject {
         let questions = selectDuelQuestions()
         let localPlayer = GKLocalPlayer.local
 
-        var matchData = DuelMatchData(
+        let matchData = DuelMatchData(
             questionIds: questions.map { $0.id },
             categoryId: "duel_mixed",
             player1Id: localPlayer.teamPlayerID
@@ -58,11 +58,6 @@ class DuelService: ObservableObject {
         let match = try await GKTurnBasedMatch.find(for: request)
         self.currentMatch = match
         self.currentDuelData = matchData
-
-        // Save initial match data
-        if let encoded = matchData.encoded() {
-            // Don't end turn yet — player 1 needs to answer first
-        }
 
         return match
     }
@@ -113,7 +108,7 @@ class DuelService: ObservableObject {
             let nextParticipants = match.participants.filter { $0.player != GKLocalPlayer.local }
             try await match.endTurn(
                 withNextParticipants: nextParticipants,
-                turnTimeout: GKTurnBasedMatch.indefiniteTimeout,
+                turnTimeout: 604800,  // 7-day timeout
                 match: encoded
             )
         }
