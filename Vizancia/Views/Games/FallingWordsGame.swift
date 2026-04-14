@@ -318,8 +318,7 @@ struct FallingWordsGame: View {
                 .fill(isHighlighted ? color : color.opacity(0.08))
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
-                        .stroke(color.opacity(isHighlighted ? 0 : 0.3), lineWidth: 2)
-                        .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
+                        .stroke(color.opacity(isHighlighted ? 0 : 0.3), style: StrokeStyle(lineWidth: 2, dash: [6]))
                 )
                 .shadow(color: isHighlighted ? color.opacity(0.3) : .clear, radius: 10, y: 0)
         )
