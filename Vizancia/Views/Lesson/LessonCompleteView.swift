@@ -194,7 +194,7 @@ struct LessonCompleteView: View {
                     ShareButton(
                         cardType: .lessonComplete(
                             lessonTitle: lesson.title,
-                            score: correctAnswers,
+                            score: correctCount,
                             total: lesson.questions.count,
                             xp: xpEarned
                         ),
