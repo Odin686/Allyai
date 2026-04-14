@@ -686,15 +686,3 @@ struct OnboardingView: View {
         }
     }
 }
-
-// MARK: - ExperienceLevel Display Name
-extension UserProfile.ExperienceLevel {
-    var displayName: String {
-        switch self {
-        case .beginner: return "New to AI"
-        case .familiar: return "Familiar"
-        case .regular: return "Regular user"
-        case .builder: return "Builder"
-        }
-    }
-}
