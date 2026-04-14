@@ -78,7 +78,6 @@
 		A10085 /* DuelResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10085; };
 		A10090 /* TrainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10090; };
 		A10091 /* CommunityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10091; };
-		A10092 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10092; };
 		A10093 /* SpacedRepetitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10093; };
 		A10094 /* WidgetSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10094; };
 		A10095 /* SmartReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10095; };
@@ -158,7 +157,6 @@
 		B10085 /* DuelResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuelResultView.swift; sourceTree = "<group>"; };
 		B10090 /* TrainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainView.swift; sourceTree = "<group>"; };
 		B10091 /* CommunityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView.swift; sourceTree = "<group>"; };
-		B10092 /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
 		B10093 /* SpacedRepetitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacedRepetitionService.swift; sourceTree = "<group>"; };
 		B10094 /* WidgetSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSyncService.swift; sourceTree = "<group>"; };
 		B10095 /* SmartReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartReviewView.swift; sourceTree = "<group>"; };
@@ -380,7 +378,6 @@
 				B10042 /* LaunchScreenView.swift */,
 				B10046 /* ConfettiView.swift */,
 				B10071 /* DictionaryView.swift */,
-				B10092 /* MascotView.swift */,
 				B10096 /* ShareCardView.swift */,
 			);
 			path = Shared;
@@ -533,7 +530,6 @@
 				A10085 /* DuelResultView.swift in Sources */,
 				A10090 /* TrainView.swift in Sources */,
 				A10091 /* CommunityView.swift in Sources */,
-				A10092 /* MascotView.swift in Sources */,
 				A10093 /* SpacedRepetitionService.swift in Sources */,
 				A10094 /* WidgetSyncService.swift in Sources */,
 				A10095 /* SmartReviewView.swift in Sources */,

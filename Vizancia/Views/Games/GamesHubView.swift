@@ -156,11 +156,6 @@ struct GamesHubView: View {
             .fullScreenCover(item: $showLesson) { launch in
                 LessonView(user: user, lesson: launch.lesson, category: launch.category)
             }
-            .mascotOverlay(
-                mood: .waving,
-                message: MascotMessages.playGreeting(for: user),
-                show: !showDuel && showGame == nil && showLesson == nil
-            )
         }
     }
 

@@ -56,11 +56,6 @@ struct TrainView: View {
             .fullScreenCover(isPresented: $showSmartReview) {
                 SmartReviewView(user: user)
             }
-            .mascotOverlay(
-                mood: .thinking,
-                message: MascotMessages.trainEncouragement(for: user),
-                show: !showDailyChallenge && !showPracticeMistakes && !showSmartReview && showLesson == nil
-            )
         }
     }
 

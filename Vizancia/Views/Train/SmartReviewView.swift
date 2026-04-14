@@ -57,12 +57,6 @@ struct SmartReviewView: View {
                 }
             }
             .navigationBarHidden(true)
-            .mascotOverlay(
-                mood: isComplete ? .celebrating : .thinking,
-                message: isComplete ? "Great review session!" : nil,
-                size: 60,
-                show: isComplete
-            )
         }
     }
 
