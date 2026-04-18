@@ -1,4 +1,52 @@
 import Foundation
+import SwiftUI
+
+// MARK: - Bot Difficulty
+enum BotDifficulty: String, Codable, CaseIterable {
+    case easy, medium, hard
+
+    var displayName: String {
+        switch self {
+        case .easy: return "Easy Bot"
+        case .medium: return "Medium Bot"
+        case .hard: return "Hard Bot"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .easy: return "tortoise.fill"
+        case .medium: return "hare.fill"
+        case .hard: return "flame.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .easy: return .aiSuccess
+        case .medium: return .aiWarning
+        case .hard: return .aiError
+        }
+    }
+
+    /// Probability of answering each question correctly
+    var accuracy: Double {
+        switch self {
+        case .easy: return 0.4
+        case .medium: return 0.65
+        case .hard: return 0.85
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .easy: return "Casual — gets ~4/10 right"
+        case .medium: return "Balanced — gets ~6-7/10 right"
+        case .hard: return "Expert — gets ~8-9/10 right"
+        }
+    }
+}
+
 
 // MARK: - Duel Match Data
 /// Codable struct serialized to GKTurnBasedMatch.matchData

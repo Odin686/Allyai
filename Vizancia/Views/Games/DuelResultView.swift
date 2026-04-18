@@ -5,6 +5,7 @@ struct DuelResultView: View {
     @Bindable var user: UserProfile
     let duelData: DuelMatchData
     let localPlayerId: String
+    var opponentName: String? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var animateResult = false
     @State private var showConfetti = false
@@ -16,6 +17,7 @@ struct DuelResultView: View {
     private var isWinner: Bool { duelData.winnerId == localPlayerId }
     private var isTie: Bool { duelData.isTie }
     private var isPerfect: Bool { myScore == totalQuestions }
+    private var isBot: Bool { duelData.player2Id?.hasPrefix("bot_") == true }
 
     private var resultTitle: String {
         if isTie { return "It's a Tie!" }
@@ -107,10 +109,19 @@ struct DuelResultView: View {
                                 Circle()
                                     .fill(Color.aiOrange.opacity(0.12))
                                     .frame(width: 56, height: 56)
-                                Image(systemName: "person.fill")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.aiOrange)
+                                if isBot {
+                                    Image(systemName: "cpu")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(.aiOrange)
+                                } else {
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(.aiOrange)
+                                }
                             }
+                            Text(opponentName ?? "Opponent")
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                .foregroundColor(.aiOrange)
                             Text("\(opponentScore)")
                                 .font(.system(size: 40, weight: .bold, design: .rounded))
                                 .foregroundColor(.aiOrange)
@@ -171,7 +182,7 @@ struct DuelResultView: View {
                     if isWinner {
                         ShareButton(
                             cardType: .duelWin(
-                                opponentName: "Opponent",
+                                opponentName: opponentName ?? "Opponent",
                                 myScore: myScore,
                                 theirScore: opponentScore
                             ),

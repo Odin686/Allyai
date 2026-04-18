@@ -22,6 +22,13 @@ struct DuelView: View {
     @State private var completedDuelData: DuelMatchData?
     @State private var phase: DuelPhase = .lobby
 
+    // Bot duel state
+    @State private var showBotPicker = false
+    @State private var isBotDuel = false
+    @State private var botDifficulty: BotDifficulty = .medium
+    @State private var showNoOpponentAlert = false
+    @State private var botOpponentName: String? = nil
+
     enum DuelPhase {
         case lobby
         case playing
@@ -54,17 +61,37 @@ struct DuelView: View {
                 }
             }
             .sheet(isPresented: $showMatchmaker) {
-                MatchmakerSheet { match in
-                    showMatchmaker = false
-                    startDuel(with: match)
+                MatchmakerSheet(
+                    onMatch: { match in
+                        showMatchmaker = false
+                        startDuel(with: match)
+                    },
+                    onCancel: {
+                        showMatchmaker = false
+                        showNoOpponentAlert = true
+                    }
+                )
+            }
+            .sheet(isPresented: $showBotPicker) {
+                BotDifficultyPicker { difficulty in
+                    showBotPicker = false
+                    startBotDuel(difficulty: difficulty)
                 }
+                .presentationDetents([.medium])
+            }
+            .alert("No Opponents Found", isPresented: $showNoOpponentAlert) {
+                Button("Play vs Bot") { showBotPicker = true }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("No players are available right now. Would you like to duel against a bot instead?")
             }
             .fullScreenCover(isPresented: $showDuelResult) {
                 if let duelData = completedDuelData {
                     DuelResultView(
                         user: user,
                         duelData: duelData,
-                        localPlayerId: GKLocalPlayer.local.teamPlayerID
+                        localPlayerId: isBotDuel ? duelData.player1Id : GKLocalPlayer.local.teamPlayerID,
+                        opponentName: botOpponentName
                     )
                 }
             }
@@ -127,7 +154,7 @@ struct DuelView: View {
                         Image(systemName: "gamecontroller")
                             .font(.system(size: 28))
                             .foregroundColor(.aiTextSecondary.opacity(0.4))
-                        Text("Sign in to Game Center to duel")
+                        Text("Sign in to Game Center to duel online")
                             .font(.system(size: 14, design: .rounded))
                             .foregroundColor(.aiTextSecondary)
                     }
@@ -139,6 +166,29 @@ struct DuelView: View {
                     )
                     .padding(.horizontal)
                 }
+
+                // Play vs Bot Button (always available)
+                Button {
+                    showBotPicker = true
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "cpu")
+                        Text("Play vs Bot")
+                    }
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .foregroundColor(.aiPrimary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(Color.aiPrimary.opacity(0.08))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .stroke(Color.aiPrimary.opacity(0.25), lineWidth: 1.5)
+                            )
+                    )
+                }
+                .padding(.horizontal)
 
                 // Active Duels
                 if !duelService.activeMatches.isEmpty {
@@ -328,6 +378,8 @@ struct DuelView: View {
     // MARK: - Actions
 
     private func startDuel(with match: GKTurnBasedMatch) {
+        isBotDuel = false
+        botOpponentName = nil
         activeDuel = match
         duelQuestions = duelService.questionsForMatch(match)
 
@@ -343,6 +395,20 @@ struct DuelView: View {
             duelService.currentMatch = match
         }
 
+        currentQuestionIndex = 0
+        correctCount = 0
+        answers = [:]
+        selectedAnswer = nil
+        duelStartTime = Date()
+        phase = .playing
+    }
+
+    private func startBotDuel(difficulty: BotDifficulty) {
+        isBotDuel = true
+        botDifficulty = difficulty
+        botOpponentName = difficulty.displayName
+        activeDuel = nil
+        duelQuestions = duelService.selectDuelQuestions()
         currentQuestionIndex = 0
         correctCount = 0
         answers = [:]
@@ -381,6 +447,11 @@ struct DuelView: View {
     private func finishDuel() {
         phase = .submitting
         let time = Date().timeIntervalSince(duelStartTime)
+
+        if isBotDuel {
+            finishBotDuel(playerTime: time)
+            return
+        }
 
         Task {
             guard let match = activeDuel else {
@@ -432,6 +503,69 @@ struct DuelView: View {
                 dismiss()
             }
         }
+    }
+
+    private func finishBotDuel(playerTime: TimeInterval) {
+        // Simulate bot answers
+        var botAnswers: [String: Bool] = [:]
+        var botScore = 0
+        for question in duelQuestions {
+            let correct = Double.random(in: 0...1) < botDifficulty.accuracy
+            botAnswers[question.id] = correct
+            if correct { botScore += 1 }
+        }
+
+        // Simulate bot time (faster on harder difficulties)
+        let botTime: TimeInterval
+        switch botDifficulty {
+        case .easy: botTime = Double.random(in: 25...45)
+        case .medium: botTime = Double.random(in: 15...30)
+        case .hard: botTime = Double.random(in: 8...18)
+        }
+
+        // Build a complete DuelMatchData
+        let localPlayerId = GKLocalPlayer.local.isAuthenticated
+            ? GKLocalPlayer.local.teamPlayerID
+            : "local_player"
+
+        var duelData = DuelMatchData(
+            questionIds: duelQuestions.map { $0.id },
+            categoryId: "duel_bot",
+            player1Id: localPlayerId
+        )
+        duelData.player1Score = correctCount
+        duelData.player1Answers = answers
+        duelData.player1Time = playerTime
+        duelData.player2Id = "bot_\(botDifficulty.rawValue)"
+        duelData.player2Score = botScore
+        duelData.player2Answers = botAnswers
+        duelData.player2Time = botTime
+
+        // Calculate result
+        let isWinner: Bool?
+        if duelData.isTie {
+            isWinner = nil
+        } else {
+            isWinner = duelData.winnerId == localPlayerId
+        }
+
+        let xp = duelService.xpReward(
+            for: duelData,
+            isWinner: isWinner,
+            isPerfect: correctCount == duelQuestions.count
+        )
+
+        user.addXP(xp)
+        user.todayXP += xp
+        user.duelWins += (isWinner == true ? 1 : 0)
+        user.duelLosses += (isWinner == false ? 1 : 0)
+        user.duelTies += (isWinner == nil ? 1 : 0)
+        user.totalDuelsPlayed += 1
+
+        GameKitService.shared.submitTotalXP(user.totalXP)
+
+        completedDuelData = duelData
+        showDuelResult = true
     }
 
     // MARK: - Option Styling
@@ -489,6 +623,7 @@ struct DuelView: View {
 // MARK: - Matchmaker Sheet
 struct MatchmakerSheet: UIViewControllerRepresentable {
     let onMatch: (GKTurnBasedMatch) -> Void
+    var onCancel: (() -> Void)? = nil
 
     func makeUIViewController(context: Context) -> GKTurnBasedMatchmakerViewController {
         let request = GKMatchRequest()
@@ -501,23 +636,116 @@ struct MatchmakerSheet: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: GKTurnBasedMatchmakerViewController, context: Context) {}
 
-    func makeCoordinator() -> Coordinator { Coordinator(onMatch: onMatch) }
+    func makeCoordinator() -> Coordinator { Coordinator(onMatch: onMatch, onCancel: onCancel) }
 
     class Coordinator: NSObject, GKTurnBasedMatchmakerViewControllerDelegate {
         let onMatch: (GKTurnBasedMatch) -> Void
-        init(onMatch: @escaping (GKTurnBasedMatch) -> Void) { self.onMatch = onMatch }
+        let onCancel: (() -> Void)?
+        init(onMatch: @escaping (GKTurnBasedMatch) -> Void, onCancel: (() -> Void)?) {
+            self.onMatch = onMatch
+            self.onCancel = onCancel
+        }
 
         func turnBasedMatchmakerViewControllerWasCancelled(_ viewController: GKTurnBasedMatchmakerViewController) {
-            viewController.dismiss(animated: true)
+            viewController.dismiss(animated: true) {
+                self.onCancel?()
+            }
         }
 
         func turnBasedMatchmakerViewController(_ viewController: GKTurnBasedMatchmakerViewController, didFailWithError error: Error) {
-            viewController.dismiss(animated: true)
+            viewController.dismiss(animated: true) {
+                self.onCancel?()
+            }
         }
 
         func turnBasedMatchmakerViewController(_ viewController: GKTurnBasedMatchmakerViewController, didFind match: GKTurnBasedMatch) {
             viewController.dismiss(animated: true)
             onMatch(match)
+        }
+    }
+}
+
+// MARK: - Bot Difficulty Picker
+struct BotDifficultyPicker: View {
+    let onSelect: (BotDifficulty) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Color.aiBackground.ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    // Header
+                    VStack(spacing: 8) {
+                        Image(systemName: "cpu")
+                            .font(.system(size: 40))
+                            .foregroundColor(.aiPrimary)
+                        Text("Choose Difficulty")
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundColor(.aiTextPrimary)
+                        Text("Pick how tough your bot opponent will be")
+                            .font(.system(size: 14, design: .rounded))
+                            .foregroundColor(.aiTextSecondary)
+                    }
+                    .padding(.top, 10)
+
+                    // Difficulty options
+                    VStack(spacing: 12) {
+                        ForEach(BotDifficulty.allCases, id: \.rawValue) { difficulty in
+                            Button {
+                                onSelect(difficulty)
+                            } label: {
+                                HStack(spacing: 14) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(difficulty.color.opacity(0.15))
+                                            .frame(width: 48, height: 48)
+                                        Image(systemName: difficulty.icon)
+                                            .font(.system(size: 20))
+                                            .foregroundColor(difficulty.color)
+                                    }
+
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(difficulty.displayName)
+                                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                                            .foregroundColor(.aiTextPrimary)
+                                        Text(difficulty.subtitle)
+                                            .font(.system(size: 13, design: .rounded))
+                                            .foregroundColor(.aiTextSecondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.bold())
+                                        .foregroundColor(.aiTextSecondary.opacity(0.4))
+                                }
+                                .padding(16)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.aiCard)
+                                        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(difficulty.color.opacity(0.2), lineWidth: 1)
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    Spacer()
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(.aiTextSecondary)
+                }
+            }
         }
     }
 }
