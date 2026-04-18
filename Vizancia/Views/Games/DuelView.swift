@@ -549,17 +549,21 @@ struct DuelView: View {
             isWinner = duelData.winnerId == localPlayerId
         }
 
-        let xp = duelService.xpReward(
-            for: duelData,
-            isWinner: isWinner,
-            isPerfect: correctCount == duelQuestions.count
-        )
+        // Bot duels use scaled XP — no stat padding
+        let isPerfect = correctCount == duelQuestions.count
+        var xp: Int
+        if let isWinner {
+            xp = isWinner
+                ? DuelRewards.botWinXP(difficulty: botDifficulty)
+                : DuelRewards.botLoseXP(difficulty: botDifficulty)
+        } else {
+            xp = DuelRewards.botTieXP(difficulty: botDifficulty)
+        }
+        if isPerfect { xp += DuelRewards.botPerfectBonusXP(difficulty: botDifficulty) }
 
         user.addXP(xp)
         user.todayXP += xp
-        user.duelWins += (isWinner == true ? 1 : 0)
-        user.duelLosses += (isWinner == false ? 1 : 0)
-        user.duelTies += (isWinner == nil ? 1 : 0)
+        // Bot duels do NOT count toward duel win/loss/tie stats
         user.totalDuelsPlayed += 1
 
         GameKitService.shared.submitTotalXP(user.totalXP)

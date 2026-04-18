@@ -112,4 +112,37 @@ struct DuelRewards {
     static let loseXP = 15
     static let tieXP = 30
     static let perfectBonusXP = 25
+
+    // Bot duels give reduced XP scaled by difficulty
+    static func botWinXP(difficulty: BotDifficulty) -> Int {
+        switch difficulty {
+        case .easy: return 15
+        case .medium: return 30
+        case .hard: return 50
+        }
+    }
+
+    static func botLoseXP(difficulty: BotDifficulty) -> Int {
+        switch difficulty {
+        case .easy: return 5
+        case .medium: return 10
+        case .hard: return 15
+        }
+    }
+
+    static func botTieXP(difficulty: BotDifficulty) -> Int {
+        switch difficulty {
+        case .easy: return 10
+        case .medium: return 20
+        case .hard: return 30
+        }
+    }
+
+    static func botPerfectBonusXP(difficulty: BotDifficulty) -> Int {
+        switch difficulty {
+        case .easy: return 5
+        case .medium: return 15
+        case .hard: return 25
+        }
+    }
 }
