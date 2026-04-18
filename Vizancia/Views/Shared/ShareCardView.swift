@@ -280,25 +280,13 @@ class ShareService {
         return renderer.uiImage
     }
 
-    /// Present share sheet with rendered card
-    func shareCard(_ cardType: ShareCardType, userName: String, totalXP: Int) {
-        guard let image = renderShareCard(cardType, userName: userName, totalXP: totalXP) else { return }
-
+    /// Present share sheet with rendered card — returns activity items for SwiftUI sheet
+    func shareItems(_ cardType: ShareCardType, userName: String, totalXP: Int) -> [Any] {
         let text = shareText(for: cardType)
-        let activityItems: [Any] = [image, text]
-        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootVC = windowScene.windows.first?.rootViewController {
-            var topVC = rootVC
-            while let presented = topVC.presentedViewController {
-                topVC = presented
-            }
-            // iPad support
-            activityVC.popoverPresentationController?.sourceView = topVC.view
-            activityVC.popoverPresentationController?.sourceRect = CGRect(x: topVC.view.bounds.midX, y: topVC.view.bounds.midY, width: 0, height: 0)
-            topVC.present(activityVC, animated: true)
+        if let image = renderShareCard(cardType, userName: userName, totalXP: totalXP) {
+            return [image, text]
         }
+        return [text]
     }
 
     private func shareText(for cardType: ShareCardType) -> String {
@@ -324,10 +312,11 @@ struct ShareButton: View {
     let cardType: ShareCardType
     let userName: String
     let totalXP: Int
+    @State private var showShareSheet = false
 
     var body: some View {
         Button {
-            ShareService.shared.shareCard(cardType, userName: userName, totalXP: totalXP)
+            showShareSheet = true
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "square.and.arrow.up")
@@ -343,5 +332,29 @@ struct ShareButton: View {
                     .fill(Color.aiPrimary.opacity(0.1))
             )
         }
+        .sheet(isPresented: $showShareSheet) {
+            ActivityViewSheet(
+                activityItems: ShareService.shared.shareItems(
+                    cardType, userName: userName, totalXP: totalXP
+                )
+            )
+            .presentationDetents([.medium, .large])
+        }
     }
+}
+
+// MARK: - Activity View Sheet (UIKit wrapper for SwiftUI)
+struct ActivityViewSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    var applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: applicationActivities
+        )
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

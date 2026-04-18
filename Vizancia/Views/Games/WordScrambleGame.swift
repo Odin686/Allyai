@@ -254,6 +254,7 @@ struct WordScrambleGame: View {
         if score > (user.gameHighScores["wordScramble"] ?? 0) {
             user.gameHighScores["wordScramble"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

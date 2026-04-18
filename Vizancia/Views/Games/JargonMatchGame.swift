@@ -223,6 +223,7 @@ struct JargonMatchGame: View {
         if score > (user.gameHighScores["jargonMatch"] ?? 0) {
             user.gameHighScores["jargonMatch"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

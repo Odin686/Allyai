@@ -6,6 +6,7 @@ struct CommunityView: View {
     @State private var showLeaderboard = false
     @State private var showDuel = false
     @State private var showAllAchievements = false
+    @State private var showShareSheet = false
     @StateObject private var gameKit = GameKitService.shared
     @StateObject private var duelService = DuelService.shared
 
@@ -63,6 +64,12 @@ struct CommunityView: View {
             }
             .sheet(isPresented: $showAllAchievements) {
                 allAchievementsSheet
+            }
+            .sheet(isPresented: $showShareSheet) {
+                let text = "I'm learning AI with Vizancia! Challenge me to a duel 🧠⚔️"
+                let url = URL(string: "https://vizancia.ca")!
+                ActivityViewSheet(activityItems: [text, url])
+                    .presentationDetents([.medium, .large])
             }
             .task {
                 await duelService.loadActiveMatches()
@@ -511,7 +518,7 @@ struct CommunityView: View {
                 .padding(.horizontal)
 
             Button {
-                shareAppLink()
+                showShareSheet = true
             } label: {
                 HStack(spacing: 16) {
                     ZStack {
@@ -553,21 +560,6 @@ struct CommunityView: View {
                 )
             }
             .padding(.horizontal)
-        }
-    }
-
-    private func shareAppLink() {
-        let text = "I'm learning AI with Vizancia! Challenge me to a duel 🧠⚔️"
-        let url = URL(string: "https://vizancia.ca")!
-        let activityVC = UIActivityViewController(activityItems: [text, url], applicationActivities: nil)
-
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootVC = windowScene.windows.first?.rootViewController {
-            var topVC = rootVC
-            while let presented = topVC.presentedViewController { topVC = presented }
-            activityVC.popoverPresentationController?.sourceView = topVC.view
-            activityVC.popoverPresentationController?.sourceRect = CGRect(x: topVC.view.bounds.midX, y: topVC.view.bounds.midY, width: 0, height: 0)
-            topVC.present(activityVC, animated: true)
         }
     }
 

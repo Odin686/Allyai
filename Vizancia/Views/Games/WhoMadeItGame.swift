@@ -238,6 +238,7 @@ struct WhoMadeItGame: View {
         if score > (user.gameHighScores["whoMadeIt"] ?? 0) {
             user.gameHighScores["whoMadeIt"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

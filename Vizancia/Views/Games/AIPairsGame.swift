@@ -454,6 +454,7 @@ struct AIPairsGame: View {
         if score > (user.gameHighScores["aiPairs"] ?? 0) {
             user.gameHighScores["aiPairs"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             isGameOver = true
         }

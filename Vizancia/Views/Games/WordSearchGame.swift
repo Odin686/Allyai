@@ -382,6 +382,7 @@ struct WordSearchGame: View {
             user.gameHighScores["wordSearch"] = score
         }
         user.gamesPlayed += 1
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

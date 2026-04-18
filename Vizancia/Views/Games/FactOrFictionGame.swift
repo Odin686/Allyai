@@ -255,6 +255,7 @@ struct FactOrFictionGame: View {
         if score > (user.gameHighScores["factOrFiction"] ?? 0) {
             user.gameHighScores["factOrFiction"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

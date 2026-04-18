@@ -192,6 +192,7 @@ struct SpeedRoundGame: View {
             user.gameHighScores["speedRound"] = score
         }
         user.gamesPlayed += 1
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

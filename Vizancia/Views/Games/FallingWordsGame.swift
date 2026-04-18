@@ -656,6 +656,7 @@ struct FallingWordsGame: View {
         if score > (user.gameHighScores["fallingWords"] ?? 0) {
             user.gameHighScores["fallingWords"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

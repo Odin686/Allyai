@@ -333,6 +333,7 @@ struct AITimelineGame: View {
         if score > (user.gameHighScores["aiTimeline"] ?? 0) {
             user.gameHighScores["aiTimeline"] = score
         }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

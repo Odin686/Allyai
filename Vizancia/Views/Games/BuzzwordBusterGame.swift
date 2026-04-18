@@ -132,6 +132,7 @@ struct BuzzwordBusterGame: View {
     private func endGame() {
         let xp = score * 8; user.addXP(xp); user.todayXP += xp; user.gamesPlayed += 1
         if score > (user.gameHighScores["buzzwordBuster"] ?? 0) { user.gameHighScores["buzzwordBuster"] = score }
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }

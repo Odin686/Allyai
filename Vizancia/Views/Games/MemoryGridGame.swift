@@ -263,6 +263,7 @@ struct MemoryGridGame: View {
             user.gameHighScores["memoryGrid"] = moves
         }
         user.gamesPlayed += 1
+        GameKitService.shared.submitTotalXP(user.totalXP)
         isGameOver = true
     }
 }
