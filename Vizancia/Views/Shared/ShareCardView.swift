@@ -275,18 +275,9 @@ class ShareService {
     /// Render a share card view to a UIImage
     func renderShareCard(_ cardType: ShareCardType, userName: String, totalXP: Int) -> UIImage? {
         let view = ShareCardView(cardType: cardType, userName: userName, totalXP: totalXP)
-        let controller = UIHostingController(rootView: view)
-        controller.view.backgroundColor = .clear
-
-        let size = controller.view.intrinsicContentSize
-        controller.view.frame = CGRect(origin: .zero, size: CGSize(width: 340, height: max(size.height, 300)))
-        controller.view.layoutIfNeeded()
-
-        let renderer = UIGraphicsImageRenderer(size: controller.view.bounds.size)
-        let image = renderer.image { _ in
-            controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
-        }
-        return image
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = UIScreen.main.scale
+        return renderer.uiImage
     }
 
     /// Present share sheet with rendered card

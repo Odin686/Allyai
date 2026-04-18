@@ -331,9 +331,16 @@ struct DuelView: View {
         activeDuel = match
         duelQuestions = duelService.questionsForMatch(match)
 
-        // If no questions yet (new match), select fresh ones
+        // If no questions yet (new match), select fresh ones and save to match
         if duelQuestions.isEmpty {
             duelQuestions = duelService.selectDuelQuestions()
+            let matchData = DuelMatchData(
+                questionIds: duelQuestions.map { $0.id },
+                categoryId: "duel_mixed",
+                player1Id: GKLocalPlayer.local.teamPlayerID
+            )
+            duelService.currentDuelData = matchData
+            duelService.currentMatch = match
         }
 
         currentQuestionIndex = 0

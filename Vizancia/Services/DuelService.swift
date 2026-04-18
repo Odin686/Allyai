@@ -38,29 +38,6 @@ class DuelService: ObservableObject {
         }
     }
 
-    // MARK: - Create New Duel
-
-    func createDuel() async throws -> GKTurnBasedMatch {
-        let request = GKMatchRequest()
-        request.minPlayers = 2
-        request.maxPlayers = 2
-
-        // Select 10 random questions from all categories
-        let questions = selectDuelQuestions()
-        let localPlayer = GKLocalPlayer.local
-
-        let matchData = DuelMatchData(
-            questionIds: questions.map { $0.id },
-            categoryId: "duel_mixed",
-            player1Id: localPlayer.teamPlayerID
-        )
-
-        let match = try await GKTurnBasedMatch.find(for: request)
-        self.currentMatch = match
-        self.currentDuelData = matchData
-
-        return match
-    }
 
     // MARK: - Submit Player's Answers
 

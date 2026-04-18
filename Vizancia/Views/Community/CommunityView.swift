@@ -558,8 +558,7 @@ struct CommunityView: View {
 
     private func shareAppLink() {
         let text = "I'm learning AI with Vizancia! Challenge me to a duel 🧠⚔️"
-        // Replace with your actual App Store link once live
-        let url = URL(string: "https://apps.apple.com/app/vizancia/id1234567890")!
+        let url = URL(string: "https://vizancia.ca")!
         let activityVC = UIActivityViewController(activityItems: [text, url], applicationActivities: nil)
 
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
