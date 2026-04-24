@@ -182,7 +182,9 @@ class GameKitService: NSObject, ObservableObject {
 // MARK: - GKGameCenterControllerDelegate
 extension GameKitService: GKGameCenterControllerDelegate {
     nonisolated func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-        gameCenterViewController.dismiss(animated: true)
+        Task { @MainActor in
+            gameCenterViewController.dismiss(animated: true)
+        }
     }
 }
 
