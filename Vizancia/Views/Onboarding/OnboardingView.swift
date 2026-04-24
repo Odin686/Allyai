@@ -237,6 +237,10 @@ struct OnboardingView: View {
                         )
                 )
                 .autocorrectionDisabled()
+                .submitLabel(.continue)
+                .onSubmit {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
                 .opacity(contentOpacity)
 
             Text("This is how we'll greet you 👋")
@@ -253,6 +257,9 @@ struct OnboardingView: View {
             .opacity(buttonOpacity)
         }
         .padding(30)
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
 
     // MARK: - Page 3: Experience Level
