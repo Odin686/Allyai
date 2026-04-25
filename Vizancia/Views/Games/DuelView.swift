@@ -24,10 +24,20 @@ struct DuelView: View {
 
     // Bot duel state
     @State private var showBotPicker = false
+    @State private var showGameModePicker = false
     @State private var isBotDuel = false
     @State private var botDifficulty: BotDifficulty = .medium
+    @State private var selectedGameMode: DuelGameMode = .quiz
     @State private var showNoOpponentAlert = false
     @State private var botOpponentName: String? = nil
+
+    // Bot turn-based state
+    @State private var isBotTurn = false
+    @State private var botThinking = false
+    @State private var botGotItRight = false
+    @State private var showBotTurnResult = false
+    @State private var botScore = 0
+    @State private var botAnswers: [String: Bool] = [:]
 
     enum DuelPhase {
         case lobby
@@ -45,7 +55,11 @@ struct DuelView: View {
                     lobbyView
                 case .playing:
                     if currentQuestionIndex < duelQuestions.count {
-                        duelQuestionView
+                        if isBotDuel && isBotTurn {
+                            botTurnView
+                        } else {
+                            duelQuestionView
+                        }
                     }
                 case .submitting:
                     submittingView
@@ -75,7 +89,19 @@ struct DuelView: View {
             .sheet(isPresented: $showBotPicker) {
                 BotDifficultyPicker { difficulty in
                     showBotPicker = false
-                    startBotDuel(difficulty: difficulty)
+                    botDifficulty = difficulty
+                    botOpponentName = difficulty.displayName
+                    // Show game mode picker next
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        showGameModePicker = true
+                    }
+                }
+                .presentationDetents([.medium])
+            }
+            .sheet(isPresented: $showGameModePicker) {
+                DuelGameModePicker { mode in
+                    showGameModePicker = false
+                    startBotDuel(difficulty: botDifficulty, gameMode: mode)
                 }
                 .presentationDetents([.medium])
             }
@@ -294,6 +320,20 @@ struct DuelView: View {
         let question = duelQuestions[currentQuestionIndex]
 
         return VStack(spacing: 24) {
+            // Turn indicator
+            if isBotDuel {
+                HStack(spacing: 8) {
+                    Image(systemName: "person.fill")
+                        .foregroundColor(.aiPrimary)
+                    Text("Your Turn")
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundColor(.aiPrimary)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(Capsule().fill(Color.aiPrimary.opacity(0.1)))
+            }
+
             // Progress bar
             HStack(spacing: 8) {
                 ForEach(0..<duelQuestions.count, id: \.self) { i in
@@ -350,18 +390,85 @@ struct DuelView: View {
             }
             .padding(.horizontal)
 
-            // Score
-            HStack {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.aiSuccess)
-                Text("\(correctCount) correct")
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(.aiTextSecondary)
+            Spacer()
+        }
+        .padding(.top, 16)
+    }
+
+    // MARK: - Bot Turn View
+    private var botTurnView: some View {
+        VStack(spacing: 24) {
+            // Progress bar
+            HStack(spacing: 8) {
+                ForEach(0..<duelQuestions.count, id: \.self) { i in
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(i < currentQuestionIndex ? Color.aiSuccess :
+                              i == currentQuestionIndex ? Color.aiOrange :
+                              Color.aiPrimary.opacity(0.15))
+                        .frame(height: 4)
+                }
+            }
+            .padding(.horizontal)
+
+            Text("Question \(currentQuestionIndex + 1) of \(duelQuestions.count)")
+                .font(.system(size: 13, weight: .medium, design: .rounded))
+                .foregroundColor(.aiTextSecondary)
+
+            Spacer()
+
+            if showBotTurnResult {
+                // Bot result
+                VStack(spacing: 16) {
+                    ZStack {
+                        Circle()
+                            .fill((botGotItRight ? Color.aiSuccess : Color.aiError).opacity(0.12))
+                            .frame(width: 80, height: 80)
+                        Image(systemName: botGotItRight ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(botGotItRight ? .aiSuccess : .aiError)
+                    }
+                    .transition(.scale.combined(with: .opacity))
+
+                    Text(botGotItRight ? "\(botOpponentName ?? "Bot") got it right!" : "\(botOpponentName ?? "Bot") got it wrong!")
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(botGotItRight ? .aiSuccess : .aiError)
+                }
+            } else {
+                // Bot thinking animation
+                VStack(spacing: 20) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.aiOrange.opacity(0.12))
+                            .frame(width: 80, height: 80)
+                        Image(systemName: "cpu")
+                            .font(.system(size: 36))
+                            .foregroundColor(.aiOrange)
+                            .symbolEffect(.pulse, isActive: botThinking)
+                    }
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "cpu")
+                            .foregroundColor(.aiOrange)
+                        Text("\(botOpponentName ?? "Bot")'s Turn")
+                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                            .foregroundColor(.aiOrange)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 6)
+                    .background(Capsule().fill(Color.aiOrange.opacity(0.1)))
+
+                    Text("Thinking...")
+                        .font(.system(size: 16, weight: .medium, design: .rounded))
+                        .foregroundColor(.aiTextSecondary)
+                }
             }
 
             Spacer()
         }
         .padding(.top, 16)
+        .onAppear {
+            performBotTurn()
+        }
     }
 
     // MARK: - Submitting View
@@ -403,16 +510,22 @@ struct DuelView: View {
         phase = .playing
     }
 
-    private func startBotDuel(difficulty: BotDifficulty) {
+    private func startBotDuel(difficulty: BotDifficulty, gameMode: DuelGameMode = .quiz) {
         isBotDuel = true
         botDifficulty = difficulty
+        selectedGameMode = gameMode
         botOpponentName = difficulty.displayName
         activeDuel = nil
         duelQuestions = duelService.selectDuelQuestions()
         currentQuestionIndex = 0
         correctCount = 0
+        botScore = 0
+        botAnswers = [:]
         answers = [:]
         selectedAnswer = nil
+        isBotTurn = false
+        botThinking = false
+        showBotTurnResult = false
         duelStartTime = Date()
         phase = .playing
     }
@@ -437,6 +550,10 @@ struct DuelView: View {
                 withAnimation(.spring(response: 0.3)) {
                     currentQuestionIndex += 1
                     selectedAnswer = nil
+                    // In bot duels, alternate turns
+                    if isBotDuel {
+                        isBotTurn = true
+                    }
                 }
             } else {
                 finishDuel()
@@ -444,14 +561,53 @@ struct DuelView: View {
         }
     }
 
+    private func performBotTurn() {
+        let question = duelQuestions[currentQuestionIndex]
+        botThinking = true
+        showBotTurnResult = false
+
+        // Simulate thinking delay
+        let thinkTime = Double.random(in: 1.2...2.2)
+        DispatchQueue.main.asyncAfter(deadline: .now() + thinkTime) {
+            let correct = Double.random(in: 0...1) < botDifficulty.accuracy
+            botAnswers[question.id] = correct
+            if correct { botScore += 1 }
+            botGotItRight = correct
+            botThinking = false
+
+            withAnimation(.spring(response: 0.4)) {
+                showBotTurnResult = true
+            }
+
+            if correct {
+                HapticService.shared.lightTap()
+            }
+
+            // Advance after showing result
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                if currentQuestionIndex + 1 < duelQuestions.count {
+                    withAnimation(.spring(response: 0.3)) {
+                        currentQuestionIndex += 1
+                        isBotTurn = false
+                        showBotTurnResult = false
+                        selectedAnswer = nil
+                    }
+                } else {
+                    finishDuel()
+                }
+            }
+        }
+    }
+
     private func finishDuel() {
-        phase = .submitting
         let time = Date().timeIntervalSince(duelStartTime)
 
         if isBotDuel {
             finishBotDuel(playerTime: time)
             return
         }
+
+        phase = .submitting
 
         Task {
             guard let match = activeDuel else {
@@ -506,16 +662,15 @@ struct DuelView: View {
     }
 
     private func finishBotDuel(playerTime: TimeInterval) {
-        // Simulate bot answers
-        var botAnswers: [String: Bool] = [:]
-        var botScore = 0
-        for question in duelQuestions {
+        // Bot answers were already recorded during turn-based play
+        // Fill in any remaining questions the bot didn't answer during turns
+        for question in duelQuestions where botAnswers[question.id] == nil {
             let correct = Double.random(in: 0...1) < botDifficulty.accuracy
             botAnswers[question.id] = correct
             if correct { botScore += 1 }
         }
 
-        // Simulate bot time (faster on harder difficulties)
+        // Simulate bot total time (faster on harder difficulties)
         let botTime: TimeInterval
         switch botDifficulty {
         case .easy: botTime = Double.random(in: 25...45)
@@ -531,7 +686,8 @@ struct DuelView: View {
         var duelData = DuelMatchData(
             questionIds: duelQuestions.map { $0.id },
             categoryId: "duel_bot",
-            player1Id: localPlayerId
+            player1Id: localPlayerId,
+            gameMode: selectedGameMode
         )
         duelData.player1Score = correctCount
         duelData.player1Answers = answers
@@ -549,7 +705,7 @@ struct DuelView: View {
             isWinner = duelData.winnerId == localPlayerId
         }
 
-        // Bot duels use scaled XP — no stat padding
+        // Bot duels use scaled XP
         let isPerfect = correctCount == duelQuestions.count
         var xp: Int
         if let isWinner {
@@ -563,10 +719,15 @@ struct DuelView: View {
 
         user.addXP(xp)
         user.todayXP += xp
-        // Bot duels do NOT count toward duel win/loss/tie stats
+        user.duelWins += (isWinner == true ? 1 : 0)
+        user.duelLosses += (isWinner == false ? 1 : 0)
+        user.duelTies += (isWinner == nil ? 1 : 0)
         user.totalDuelsPlayed += 1
 
         GameKitService.shared.submitTotalXP(user.totalXP)
+        if isWinner == true {
+            GameKitService.shared.submitDuelWins(user.duelWins)
+        }
 
         completedDuelData = duelData
         showDuelResult = true
@@ -734,6 +895,91 @@ struct BotDifficultyPicker: View {
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(difficulty.color.opacity(0.2), lineWidth: 1)
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    Spacer()
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(.aiTextSecondary)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Duel Game Mode Picker
+struct DuelGameModePicker: View {
+    let onSelect: (DuelGameMode) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Color.aiBackground.ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    // Header
+                    VStack(spacing: 8) {
+                        Image(systemName: "gamecontroller.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(.aiPrimary)
+                        Text("Choose Game Mode")
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundColor(.aiTextPrimary)
+                        Text("How do you want to duel?")
+                            .font(.system(size: 14, design: .rounded))
+                            .foregroundColor(.aiTextSecondary)
+                    }
+                    .padding(.top, 10)
+
+                    // Game mode options
+                    VStack(spacing: 12) {
+                        ForEach(DuelGameMode.allCases, id: \.rawValue) { mode in
+                            Button {
+                                onSelect(mode)
+                            } label: {
+                                HStack(spacing: 14) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(mode.color.opacity(0.15))
+                                            .frame(width: 48, height: 48)
+                                        Image(systemName: mode.icon)
+                                            .font(.system(size: 20))
+                                            .foregroundColor(mode.color)
+                                    }
+
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(mode.displayName)
+                                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                                            .foregroundColor(.aiTextPrimary)
+                                        Text(mode.description)
+                                            .font(.system(size: 13, design: .rounded))
+                                            .foregroundColor(.aiTextSecondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.bold())
+                                        .foregroundColor(.aiTextSecondary.opacity(0.4))
+                                }
+                                .padding(16)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.aiCard)
+                                        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(mode.color.opacity(0.2), lineWidth: 1)
                                 )
                             }
                         }

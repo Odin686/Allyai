@@ -1,6 +1,45 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Duel Game Mode
+enum DuelGameMode: String, Codable, CaseIterable {
+    case quiz
+    case speedRound
+    case factOrFiction
+
+    var displayName: String {
+        switch self {
+        case .quiz: return "Quick Quiz"
+        case .speedRound: return "Speed Round"
+        case .factOrFiction: return "Fact or Fiction"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .quiz: return "questionmark.circle.fill"
+        case .speedRound: return "bolt.fill"
+        case .factOrFiction: return "hand.thumbsup.fill"
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .quiz: return "10 questions, take turns answering"
+        case .speedRound: return "Race the clock — who scores higher?"
+        case .factOrFiction: return "True or false? Test your instincts!"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .quiz: return .aiPrimary
+        case .speedRound: return .aiOrange
+        case .factOrFiction: return .aiSuccess
+        }
+    }
+}
+
 // MARK: - Bot Difficulty
 enum BotDifficulty: String, Codable, CaseIterable {
     case easy, medium, hard
@@ -40,9 +79,9 @@ enum BotDifficulty: String, Codable, CaseIterable {
 
     var subtitle: String {
         switch self {
-        case .easy: return "Casual — gets ~4/10 right"
-        case .medium: return "Balanced — gets ~6-7/10 right"
-        case .hard: return "Expert — gets ~8-9/10 right"
+        case .easy: return "Takes it easy — good for practice"
+        case .medium: return "A worthy rival — bring your A game"
+        case .hard: return "Nearly unbeatable — only the best survive"
         }
     }
 }
@@ -62,12 +101,14 @@ struct DuelMatchData: Codable {
     var player1Time: TimeInterval?
     var player2Time: TimeInterval?
     var createdAt: Date
+    var gameMode: DuelGameMode?
 
-    init(questionIds: [String], categoryId: String, player1Id: String) {
+    init(questionIds: [String], categoryId: String, player1Id: String, gameMode: DuelGameMode? = nil) {
         self.questionIds = questionIds
         self.categoryId = categoryId
         self.player1Id = player1Id
         self.createdAt = Date()
+        self.gameMode = gameMode
     }
 
     // Encode to Data for Game Center
