@@ -19,7 +19,7 @@ struct CommunityView: View {
     }
 
     private var nextDuelAchievement: AchievementData? {
-        AchievementData.all.first { $0.id.hasPrefix("duel_streak") || $0.id == "first_blood" && !$0.condition(user) }
+        AchievementData.all.first { ($0.id.hasPrefix("duel_streak") || $0.id == "first_blood") && !$0.condition(user) }
     }
 
     var body: some View {
@@ -204,7 +204,7 @@ struct CommunityView: View {
                 // Grid
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 7), spacing: 3) {
                     ForEach(days, id: \.self) { day in
-                        let dateStr = dayFormatter.string(from: day)
+                        let dateStr = Self.dayFormatter.string(from: day)
                         let isActive = activeDaysSet.contains(dateStr)
                         let isToday = Calendar.current.isDateInToday(day)
                         let xp = user.dailyXPLog[dateStr] ?? 0
@@ -299,11 +299,11 @@ struct CommunityView: View {
         return (0..<84).compactMap { calendar.date(byAdding: .day, value: $0, to: startDate) }
     }
 
-    private var dayFormatter: DateFormatter {
+    private static let dayFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd"
         return f
-    }
+    }()
 
     // MARK: - Duel Trophies
     private var duelTrophiesSection: some View {

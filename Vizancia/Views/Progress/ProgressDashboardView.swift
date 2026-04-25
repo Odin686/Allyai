@@ -94,6 +94,13 @@ struct ProgressDashboardView: View {
                 miniStat(value: "\(completedCategories)/\(provider.allCategories.count)", label: "Categories", icon: "folder.fill", color: .aiWarning)
                 miniStat(value: "\(user.gamesPlayed)", label: "Games Played", icon: "gamecontroller.fill", color: .aiError)
             }
+            if user.totalDuelsPlayed > 0 {
+                HStack(spacing: 12) {
+                    miniStat(value: "\(user.duelWins)W / \(user.duelLosses)L", label: "Duel Record", icon: "bolt.fill", color: .aiPrimary)
+                    let winRate = user.totalDuelsPlayed > 0 ? (user.duelWins * 100) / user.totalDuelsPlayed : 0
+                    miniStat(value: "\(winRate)%", label: "Win Rate", icon: "trophy.fill", color: .aiWarning)
+                }
+            }
         }
         .padding(.horizontal)
     }
@@ -364,6 +371,17 @@ struct SettingsSheet: View {
                     user.todayXP = 0
                     user.activeDays = []
                     user.missedQuestionIds = []
+                    user.completedLessonIDs = []
+                    user.perfectLessonIDs = []
+                    user.duelWins = 0
+                    user.duelLosses = 0
+                    user.duelTies = 0
+                    user.totalDuelsPlayed = 0
+                    user.dailyChallengeStreak = 0
+                    user.dailyXPLog = [:]
+                    user.spacedRepetitionCardsData = Data()
+                    user.categoryCorrectCounts = [:]
+                    user.categoryQuestionCounts = [:]
                 }
             } message: {
                 Text("This will erase all your progress, XP, achievements, and stats. This cannot be undone.")

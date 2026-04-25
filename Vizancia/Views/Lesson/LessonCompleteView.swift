@@ -249,7 +249,7 @@ struct LessonCompleteView: View {
 
             // Submit scores to Game Center leaderboards
             GameKitService.shared.submitTotalXP(user.totalXP)
-            GameKitService.shared.submitWeeklyXP(user.todayXP)
+            GameKitService.shared.submitWeeklyXP(user.totalXP)
 
             // Sync widget data
             WidgetSyncService.shared.syncToWidget(user: user)

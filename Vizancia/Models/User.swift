@@ -278,4 +278,13 @@ class UserProfile {
         addXP(xp)
         todayXP += xp
     }
+
+    /// Records today as an active day and logs XP earned.
+    func recordActivity(xpEarned: Int = 0) {
+        let today = Date().dateKey
+        if !activeDays.contains(today) {
+            activeDays.append(today)
+        }
+        dailyXPLog[today] = (dailyXPLog[today] ?? 0) + xpEarned
+    }
 }

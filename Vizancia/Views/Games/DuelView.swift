@@ -723,10 +723,24 @@ struct DuelView: View {
         user.duelLosses += (isWinner == false ? 1 : 0)
         user.duelTies += (isWinner == nil ? 1 : 0)
         user.totalDuelsPlayed += 1
+        user.gamesPlayed += 1
+
+        // Record activity for streak calendar
+        user.recordActivity(xpEarned: xp)
 
         GameKitService.shared.submitTotalXP(user.totalXP)
         if isWinner == true {
             GameKitService.shared.submitDuelWins(user.duelWins)
+            // Duel win is a positive moment — prompt for review
+            AppReviewService.shared.recordPositiveMoment()
+        }
+
+        // Check for newly unlocked achievements
+        for achievement in AchievementData.all {
+            if !user.unlockedAchievementIds.contains(achievement.id) && achievement.condition(user) {
+                user.unlockedAchievementIds.append(achievement.id)
+                break
+            }
         }
 
         completedDuelData = duelData

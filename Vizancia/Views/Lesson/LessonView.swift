@@ -549,6 +549,7 @@ struct LessonView: View {
         user.todayXP += xpEarned
         user.lastActiveDate = Date()
         StreakService.shared.updateStreak(for: user)
+        user.recordActivity(xpEarned: xpEarned)
         
         user.clearLessonProgress()
         showLessonComplete = true
